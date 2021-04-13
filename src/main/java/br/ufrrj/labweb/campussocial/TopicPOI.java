@@ -33,42 +33,19 @@ public class TopicPOI {
   @Field(type = FieldType.Text)
   private String name;
 
-  @Field(type = FieldType.Date)
-  private String created_at;
-
   @Field(type = FieldType.Text)
   private String text;
 
   @Field(type = FieldType.Text)
-  private String image;
-
-  @Field(type = FieldType.Text)
-  private String video;
-
-  @Field(type = FieldType.Double)
-  private Integer latitude;
-
-  @Field(type = FieldType.Double)
-  private Integer longitude;
+  private String comments;
 
   private GeoPoint location;
-
-  public TopicPOI(long id, String text, String name, String created_at, String image, String video, Integer latitude,
-      Integer longitude, GeoPoint location) {
-    this.id = id;
-    this.text = text;
-    this.name = name;
-    this.created_at = created_at;
-    this.image = image;
-    this.video = video;
-    this.latitude = latitude;
-    this.longitude = longitude;
-    this.location = location;
-  }
 
   public TopicPOI(long id, String name, String text, String comments, GeoPoint location) {
     this.id = id;
     this.name = name;
+    this.text = text;
+    this.comments = comments;
     this.location = location;
   }
 
@@ -88,38 +65,6 @@ public class TopicPOI {
     this.text = text;
   }
 
-  public String getImage() {
-    return image;
-  }
-
-  public void setImage(String image) {
-    this.image = image;
-  }
-
-  public String getVideo() {
-    return video;
-  }
-
-  public void setVideo(String video) {
-    this.video = video;
-  }
-
-  public Integer getLatitude() {
-    return latitude;
-  }
-
-  public void setLatitude(Integer latitude) {
-    this.latitude = latitude;
-  }
-
-  public Integer getLongitude() {
-    return longitude;
-  }
-
-  public void setLongitude(Integer longitude) {
-    this.longitude = longitude;
-  }
-
   public GeoPoint getLocation() {
     return location;
   }
@@ -134,21 +79,6 @@ public class TopicPOI {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getCreated_at() {
-    return created_at;
-  }
-
-  public void setCreated_at(String created_at) {
-    this.created_at = created_at;
-  }
-
-  @Override
-  public String toString() {
-    return "TopicPOI [created_at=" + created_at + ", id=" + id + ", image=" + image + ", latitude=" + latitude
-        + ", location=" + location + ", longitude=" + longitude + ", text=" + text + ", name=" + name + ", video="
-        + video + "]";
   }
 
 }
