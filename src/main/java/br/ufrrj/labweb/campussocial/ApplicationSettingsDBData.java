@@ -65,7 +65,7 @@ public class ApplicationSettingsDBData implements CommandLineRunner {
 			String text = fields[2];
 			String comments = fields[3];
 			double lat = Double.parseDouble(fields[4]);
-			double lon = Double.parseDouble(fields[6]);
+			double lon = Double.parseDouble(fields[5]);
 			GeoPoint location = new GeoPoint(lat, lon);
 			return Optional.of(new TopicPOI(id, name, text, comments, location));
 		} catch (Exception e) {
