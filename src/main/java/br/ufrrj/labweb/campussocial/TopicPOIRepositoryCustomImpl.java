@@ -29,9 +29,9 @@ public class TopicPOIRepositoryCustomImpl implements TopicPOIRepositoryCustom {
         Query query = new CriteriaQuery(new Criteria("location").within(geoPoint, distance.toString() + unit));
 
         // add a sort to get the actual distance back in the sort value
-        // Sort sort = Sort.by(new GeoDistanceOrder("location",
-        // geoPoint).withUnit(unit));
-        // query.addSort(sort);
+        Sort sort = Sort.by(new GeoDistanceOrder("location",
+        geoPoint).withUnit(unit));
+        query.addSort(sort);
 
         return operations.search(query, TopicPOI.class).getSearchHits();
     }
