@@ -1,0 +1,12 @@
+logging.level:
+  root: warn
+  com.sothawo: debug
+  org.springframework:
+    data: info
+    data.elasticsearch: info
+
+br:
+  ufrrj:
+    labweb:
+      campussocial:
+        elastic-search-host: localhost:9200
