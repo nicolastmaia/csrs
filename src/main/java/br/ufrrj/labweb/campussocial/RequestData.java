@@ -6,8 +6,19 @@ public class RequestData {
 
     @Nullable
     private String text;
-    private double lat;
-    private double lon;
+    private double centerLat;
+    private double centerLon;
+
+    @Nullable
+    private double topLeftLat;
+    @Nullable
+    private double topLeftLon;
+    
+    @Nullable
+    private double bottomRightLat;
+    @Nullable
+    private double bottomRightLon;
+
     @Nullable
     Double distance;
     @Nullable
@@ -22,20 +33,20 @@ public class RequestData {
         this.text = text;
     }
 
-    public double getLat() {
-        return lat;
+    public double getCenterLat() {
+        return centerLat;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setCenterLat(double centerLat) {
+        this.centerLat = centerLat;
     }
 
-    public double getLon() {
-        return lon;
+    public double getCenterLon() {
+        return centerLon;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setCenterLon(double centerLon) {
+        this.centerLon = centerLon;
     }
 
     @Nullable
@@ -54,5 +65,37 @@ public class RequestData {
 
     public void setUnit(@Nullable String unit) {
         this.unit = unit;
+    }
+
+    public double getTopLeftLat() {
+        return topLeftLat;
+    }
+
+    public void setTopLeftLat(double topLeftLat) {
+        this.topLeftLat = topLeftLat;
+    }
+
+    public double getTopLeftLon() {
+        return topLeftLon;
+    }
+
+    public void setTopLeftLon(double topLeftLon) {
+        this.topLeftLon = topLeftLon;
+    }
+
+    public double getBottomRightLat() {
+        return bottomRightLat;
+    }
+
+    public void setBottomRightLat(double bottomRightLat) {
+        this.bottomRightLat = bottomRightLat;
+    }
+
+    public double getBottomRightLon() {
+        return bottomRightLon;
+    }
+
+    public void setBottomRightLon(double bottomRightLon) {
+        this.bottomRightLon = bottomRightLon;
     }
 }

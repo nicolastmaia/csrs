@@ -19,4 +19,5 @@ public interface TopicPOIRepositoryCustom {
      * @return the found entities
      */
     List<SearchHit<TopicPOI>> searchWithin(GeoPoint geoPoint, Double distance, String unit);
+    List<SearchHit<TopicPOI>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint, String unit);
 }

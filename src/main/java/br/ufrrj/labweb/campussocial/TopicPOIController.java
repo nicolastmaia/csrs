@@ -26,7 +26,7 @@ public class TopicPOIController {
     @PostMapping("/nearest3")
     List<ResultData> nearest3(@RequestBody RequestData requestData) {
 
-        GeoPoint location = new GeoPoint(requestData.getLat(), requestData.getLon());
+        GeoPoint location = new GeoPoint(requestData.getCenterLat(), requestData.getCenterLon());
         Sort sort = Sort.by(new GeoDistanceOrder("location", location).withUnit("km"));
 
         List<SearchHit<TopicPOI>> searchHits;
@@ -40,13 +40,26 @@ public class TopicPOIController {
         return toResultData(searchHits);
     }
 
-    @PostMapping("/within")
+    @PostMapping("/within/circle")
     List<ResultData> withinDistance(@RequestBody RequestData requestData) {
 
-        GeoPoint location = new GeoPoint(requestData.getLat(), requestData.getLon());
+        GeoPoint location = new GeoPoint(requestData.getCenterLat(), requestData.getCenterLon());
 
         List<SearchHit<TopicPOI>> searchHits = repository.searchWithin(location, requestData.distance,
                 requestData.unit);
+
+        return toResultData(searchHits);
+    }
+
+    @PostMapping("/within/square")
+    List<ResultData> withinSquare(@RequestBody RequestData requestData) {
+
+        GeoPoint centerPoint = new GeoPoint(requestData.getCenterLat(), requestData.getCenterLon());
+
+        GeoPoint topLeftPoint = new GeoPoint(requestData.getTopLeftLat(), requestData.getTopLeftLon());
+        GeoPoint bottomRightPoint = new GeoPoint(requestData.getBottomRightLat(), requestData.getBottomRightLon());
+
+        List<SearchHit<TopicPOI>> searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint, centerPoint, requestData.unit);
 
         return toResultData(searchHits);
     }

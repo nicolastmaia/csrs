@@ -35,4 +35,17 @@ public class TopicPOIRepositoryCustomImpl implements TopicPOIRepositoryCustom {
 
         return operations.search(query, TopicPOI.class).getSearchHits();
     }
+
+    @Override
+    public List<SearchHit<TopicPOI>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint, String unit) {
+
+        Query query = new CriteriaQuery(new Criteria("location").boundedBy(geoPoint1, geoPoint2));
+
+        // add a sort to get the actual distance back in the sort value
+        Sort sort = Sort.by(new GeoDistanceOrder("location",
+        centerPoint).withUnit(unit));
+        query.addSort(sort);
+
+        return operations.search(query, TopicPOI.class).getSearchHits();
+    }
 }
