@@ -22,30 +22,30 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
  */
 
 public class ResultData {
-    private String name;
+    private String title;
     private String text;
     private GeoPoint location;
     private Double distance;
 
-    public ResultData(String name, String text, GeoPoint location, Double distance) {
-        this.name = name;
+    public ResultData(String title, String text, GeoPoint location, Double distance) {
+        this.title = title;
         this.text = text;
         this.location = location;
         this.distance = distance;
     }
 
-    public ResultData(String name, GeoPoint location, Double distance) {
-        this.name = name;
+    public ResultData(String title, GeoPoint location, Double distance) {
+        this.title = title;
         this.location = location;
         this.distance = distance;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getText() {

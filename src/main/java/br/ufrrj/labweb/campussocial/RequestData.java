@@ -4,8 +4,11 @@ import org.springframework.lang.Nullable;
 
 public class RequestData {
 
+    private String title;
+    
     @Nullable
     private String text;
+
     private double centerLat;
     private double centerLon;
 
@@ -23,6 +26,14 @@ public class RequestData {
     Double distance;
     @Nullable
     String unit;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     @Nullable
     public String getText() {

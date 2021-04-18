@@ -23,23 +23,6 @@ public class TopicPOIController {
         this.repository = repository;
     }
 
-    @PostMapping("/nearest3")
-    List<ResultData> nearest3(@RequestBody RequestData requestData) {
-
-        GeoPoint location = new GeoPoint(requestData.getCenterLat(), requestData.getCenterLon());
-        Sort sort = Sort.by(new GeoDistanceOrder("location", location).withUnit("km"));
-
-        List<SearchHit<TopicPOI>> searchHits;
-
-        if (StringUtils.hasText(requestData.getText())) {
-            searchHits = repository.searchTop3ByName(requestData.getText(), sort);
-        } else {
-            searchHits = repository.searchTop3By(sort);
-        }
-
-        return toResultData(searchHits);
-    }
-
     @PostMapping("/within/circle")
     List<ResultData> withinDistance(@RequestBody RequestData requestData) {
 
@@ -68,7 +51,7 @@ public class TopicPOIController {
         return searchHits.stream().map(searchHit -> {
             Double distance = (Double) searchHit.getSortValues().get(0);
             TopicPOI topicPOI = searchHit.getContent();
-            return new ResultData(topicPOI.getName(), topicPOI.getLocation(), distance);
+            return new ResultData(topicPOI.getTitle(), topicPOI.getLocation(), distance);
         }).collect(Collectors.toList());
     }
 }

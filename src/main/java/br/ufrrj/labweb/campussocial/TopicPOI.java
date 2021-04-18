@@ -25,27 +25,23 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
  * The entity stored in Elasticsearch, a POI of the topic category
  *
  */
-@Document(indexName = "topicpois")
+@Document(indexName = "cs-elastic")
 public class TopicPOI {
   @Id
   private long id;
 
   @Field(type = FieldType.Text)
-  private String name;
+  private String title;
 
   @Field(type = FieldType.Text)
   private String text;
 
-  @Field(type = FieldType.Text)
-  private String comments;
-
   private GeoPoint location;
 
-  public TopicPOI(long id, String name, String text, String comments, GeoPoint location) {
+  public TopicPOI(long id, String title, String text, GeoPoint location) {
     this.id = id;
-    this.name = name;
+    this.title = title;
     this.text = text;
-    this.comments = comments;
     this.location = location;
   }
 
@@ -73,12 +69,12 @@ public class TopicPOI {
     this.location = location;
   }
 
-  public String getName() {
-    return name;
+  public String getTitle() {
+    return title;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setTitle(String title) {
+    this.title = title;
   }
 
 }
