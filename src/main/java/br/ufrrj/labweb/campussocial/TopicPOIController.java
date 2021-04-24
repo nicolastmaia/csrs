@@ -3,6 +3,10 @@ package br.ufrrj.labweb.campussocial;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.common.lucene.search.Queries;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.similarity.ScriptedSimilarity.Query;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
@@ -47,11 +51,20 @@ public class TopicPOIController {
         return toResultData(searchHits);
     }
 
+
+    @PostMapping("/bytitle")
+    List<ResultData> byTitle(@RequestBody RequestData requestData){
+        String title = requestData.getTitle();
+
+        List<SearchHit<TopicPOI>> searchHits = repository.searchByTitle(title);
+
+        return toResultData(searchHits);
+    }
+
     private List<ResultData> toResultData(List<SearchHit<TopicPOI>> searchHits) {
         return searchHits.stream().map(searchHit -> {
-            Double distance = (Double) searchHit.getSortValues().get(0);
             TopicPOI topicPOI = searchHit.getContent();
-            return new ResultData(topicPOI.getTitle(), topicPOI.getLocation(), distance);
+            return new ResultData(topicPOI.getTitle());
         }).collect(Collectors.toList());
     }
 }

@@ -25,19 +25,20 @@ public class ResultData {
     private String title;
     private String text;
     private GeoPoint location;
-    private Double distance;
 
-    public ResultData(String title, String text, GeoPoint location, Double distance) {
+    public ResultData(String title, String text, GeoPoint location) {
         this.title = title;
         this.text = text;
         this.location = location;
-        this.distance = distance;
     }
 
-    public ResultData(String title, GeoPoint location, Double distance) {
+    public ResultData(String title, GeoPoint location) {
         this.title = title;
         this.location = location;
-        this.distance = distance;
+    }
+
+    public ResultData(String title) {
+        this.title = title;
     }
 
     public String getTitle() {
@@ -64,11 +65,4 @@ public class ResultData {
         this.location = location;
     }
 
-    public Double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Double distance) {
-        this.distance = distance;
-    }
 }

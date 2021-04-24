@@ -48,4 +48,13 @@ public class TopicPOIRepositoryCustomImpl implements TopicPOIRepositoryCustom {
 
         return operations.search(query, TopicPOI.class).getSearchHits();
     }
+
+    @Override
+    public List<SearchHit<TopicPOI>> searchByTitle(String title){
+        String[] splitTitle = title.split(" ");
+        Criteria criteria = new Criteria("title").contains(splitTitle[0]).or(new Criteria("title").expression(title));
+        Query query = new CriteriaQuery(criteria);
+
+        return operations.search(query, TopicPOI.class).getSearchHits();
+    }
 }
