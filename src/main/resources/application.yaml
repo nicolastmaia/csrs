@@ -1,6 +1,6 @@
 logging.level:
   root: warn
-  com.sothawo: debug
+  br.ufrrj.labweb.campussocial: debug
   org.springframework:
     data: info
     data.elasticsearch: info
