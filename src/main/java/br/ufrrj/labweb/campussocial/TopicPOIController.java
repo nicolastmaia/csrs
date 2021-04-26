@@ -64,7 +64,7 @@ public class TopicPOIController {
     private List<ResultData> toResultData(List<SearchHit<TopicPOI>> searchHits) {
         return searchHits.stream().map(searchHit -> {
             TopicPOI topicPOI = searchHit.getContent();
-            return new ResultData(topicPOI.getTitle());
+            return new ResultData(topicPOI.getId(), topicPOI.getTitle(),topicPOI.getText(), topicPOI.getLocation());
         }).collect(Collectors.toList());
     }
 }

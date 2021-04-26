@@ -22,23 +22,35 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
  */
 
 public class ResultData {
+    private long id;
     private String title;
     private String text;
     private GeoPoint location;
 
-    public ResultData(String title, String text, GeoPoint location) {
+    public ResultData(long id, String title, String text, GeoPoint location) {
+        this.id = id;
         this.title = title;
         this.text = text;
         this.location = location;
     }
-
-    public ResultData(String title, GeoPoint location) {
+    
+    public ResultData(long id, String title, GeoPoint location) {
+        this.id = id;
         this.title = title;
         this.location = location;
     }
-
-    public ResultData(String title) {
+    
+    public ResultData(long id, String title) {
+        this.id = id;
         this.title = title;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {
