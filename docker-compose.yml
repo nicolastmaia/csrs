@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: cidadesocial
+    image: 'cidade-social:latest'
+    expose:
+        - 8080
+    ports:
+      - 8080:8080
+      - 8082:8082
+    build:
+      context: .
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/campsocialdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_TOMCAT_TEST_WHILE_IDLE=true
+      - SPRING_DATASOURCE_TOMCAT_VALIDATION_QUERY=SELECT 1
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_JPA_DATABASE_PLATAFORM=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    volumes:
+      - ${MAVEN_DEPS_DIR}:/root/.m2
+      - ../:/root/cidadesocialserver
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    restart: unless-stopped
+
+  db:
+    container_name: db
+    image: 'postgres:9.5'
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=campsocialdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/campsocialdb/
+    volumes:
+      - ${DB_DATA_DIR}:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    ports:
+      - "5050:5050"
+    depends_on:
+      - db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASS}
+      - PGADMIN_LISTEN_PORT=5050
+    volumes:
+      - ${PGADMIN_DATA_DIR}:/var/lib/pgadmin
+      
+  elastic:
+    container_name: elastic
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+    networks:
+      - elk
+
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash:7.12.0
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    depends_on:
+      - elastic
+      - db
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/jdbcDriver:/usr/share/logstash/logstash-core/lib/jars/jdbcDriver
+    networks:
+      - elk
+      
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  elastic:
+
