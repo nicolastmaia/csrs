@@ -1,6 +1,3 @@
-/*
- * (c) Copyright 2020 sothawo
- */
 package br.ufrrj.labweb.campussocial;
 
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -19,6 +16,9 @@ public interface TopicPOIRepositoryCustom {
      * @return the found entities
      */
     List<SearchHit<TopicPOI>> searchWithin(GeoPoint geoPoint, Double distance, String unit);
-    List<SearchHit<TopicPOI>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint, String unit);
+
+    List<SearchHit<TopicPOI>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
+            String unit);
+
     List<SearchHit<TopicPOI>> searchByTitle(String title);
 }

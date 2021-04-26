@@ -3,15 +3,8 @@ package br.ufrrj.labweb.campussocial;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.elasticsearch.common.lucene.search.Queries;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.similarity.ScriptedSimilarity.Query;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
-import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,14 +39,14 @@ public class TopicPOIController {
         GeoPoint topLeftPoint = new GeoPoint(requestData.getTopLeftLat(), requestData.getTopLeftLon());
         GeoPoint bottomRightPoint = new GeoPoint(requestData.getBottomRightLat(), requestData.getBottomRightLon());
 
-        List<SearchHit<TopicPOI>> searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint, centerPoint, requestData.unit);
+        List<SearchHit<TopicPOI>> searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint,
+                centerPoint, requestData.unit);
 
         return toResultData(searchHits);
     }
 
-
     @PostMapping("/bytitle")
-    List<ResultData> byTitle(@RequestBody RequestData requestData){
+    List<ResultData> byTitle(@RequestBody RequestData requestData) {
         String title = requestData.getTitle();
 
         List<SearchHit<TopicPOI>> searchHits = repository.searchByTitle(title);

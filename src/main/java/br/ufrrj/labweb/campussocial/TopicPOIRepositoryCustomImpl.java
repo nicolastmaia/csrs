@@ -1,6 +1,3 @@
-/*
- * (c) Copyright 2020 sothawo
- */
 package br.ufrrj.labweb.campussocial;
 
 import org.springframework.data.domain.Sort;
@@ -29,28 +26,27 @@ public class TopicPOIRepositoryCustomImpl implements TopicPOIRepositoryCustom {
         Query query = new CriteriaQuery(new Criteria("location").within(geoPoint, distance.toString() + unit));
 
         // add a sort to get the actual distance back in the sort value
-        Sort sort = Sort.by(new GeoDistanceOrder("location",
-        geoPoint).withUnit(unit));
+        Sort sort = Sort.by(new GeoDistanceOrder("location", geoPoint).withUnit(unit));
         query.addSort(sort);
 
         return operations.search(query, TopicPOI.class).getSearchHits();
     }
 
     @Override
-    public List<SearchHit<TopicPOI>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint, String unit) {
+    public List<SearchHit<TopicPOI>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
+            String unit) {
 
         Query query = new CriteriaQuery(new Criteria("location").boundedBy(geoPoint1, geoPoint2));
 
         // add a sort to get the actual distance back in the sort value
-        Sort sort = Sort.by(new GeoDistanceOrder("location",
-        centerPoint).withUnit(unit));
+        Sort sort = Sort.by(new GeoDistanceOrder("location", centerPoint).withUnit(unit));
         query.addSort(sort);
 
         return operations.search(query, TopicPOI.class).getSearchHits();
     }
 
     @Override
-    public List<SearchHit<TopicPOI>> searchByTitle(String title){
+    public List<SearchHit<TopicPOI>> searchByTitle(String title) {
         String[] splitTitle = title.split(" ");
         Criteria criteria = new Criteria("title").contains(splitTitle[0]).or(new Criteria("title").expression(title));
         Query query = new CriteriaQuery(criteria);
