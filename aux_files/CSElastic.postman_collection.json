@@ -73,12 +73,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8083/topicpois/bytitle",
+					"raw": "http://localhost:8080/topicpois/bytitle",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8083",
+					"port": "8080",
 					"path": [
 						"topicpois",
 						"bytitle"
@@ -102,12 +102,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8083/topicpois/within/circle",
+					"raw": "http://localhost:8080/topicpois/within/circle",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8083",
+					"port": "8080",
 					"path": [
 						"topicpois",
 						"within",
@@ -132,12 +132,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8083/topicpois/within/square",
+					"raw": "http://localhost:8080/topicpois/within/square",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8083",
+					"port": "8080",
 					"path": [
 						"topicpois",
 						"within",
