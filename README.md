@@ -19,7 +19,9 @@ Após instalar e configurar o logstash, entre na pasta '/usr/share/logstash/bin'
 Para popular o banco rode os seguintes comandos após estar com os containers rodando :
 
 1 - `docker exec -it db-new-cs bash`
+
 2 - `cd /var/lib/postgres/data`
+
 3 - `psql -U postgres -d campsocialdb < cs-populado`
 
 Pronto. O banco agr já está populado com alguns dados mockados que inserimos através do postman.
