@@ -6,7 +6,7 @@ Primeiramente, temos que configurar o *pipeline* para que o logstash possa pegar
 
 Para isso, é necessário ter o logstash, que não está dockerizado, e precisa ser instalado por meio do [site oficial](https://www.elastic.co/guide/en/logstash/current/installing-logstash.html). As instruções também se encontram nele.
 
-Após a instalação, é necessário alterar o arquivo .conf original, pelo modificado para acessar e requisitar dados do postgres. O arquivo modificado é o **logstash.conf**, dentro da pasta **aux_files**.
+Após a instalação, é necessário substituir o arquivo .conf original, pelo modificado para acessar e requisitar dados do postgres. O arquivo modificado é o **logstash.conf**, dentro da pasta **aux_files**.
 
 Há um arquivo docker-compose.yml para acelerar o início dos servidores postgres e do elasticSearch, só sendo necessário executar o comando `docker-compose up`, na pasta onde o docker-compose.yml se encontra.
 
