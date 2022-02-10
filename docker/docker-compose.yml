@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # DESCOMENTE O SERVICE ABAIXO PARA RODAR O CIDADESOCIAL SERVER EM UM CONTAINER
+  # cs:
+  #   container_name: cidadesocial
+  #   image: 'cidade-social:latest'
+  #   expose:
+  #       - 8080
+  #   ports:
+  #     - 8080:8080
+  #     - 8082:8082
+  #   build:
+  #     context: .
+  #   depends_on:
+  #     - cspostgres
+  #   environment:
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://cspostgres:5432/campsocialdb
+  #     - SPRING_DATASOURCE_USERNAME=postgres
+  #     - SPRING_DATASOURCE_PASSWORD=postgres
+  #     - SPRING_DATASOURCE_TOMCAT_TEST_WHILE_IDLE=true
+  #     - SPRING_DATASOURCE_TOMCAT_VALIDATION_QUERY=SELECT 1
+  #     - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+  #     - SPRING_JPA_DATABASE_PLATAFORM=org.hibernate.dialect.PostgreSQLDialect
+  #     - SPRING_JPA_SHOW_SQL=true
+  #     - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  #   volumes:
+  #     - mvn_deps:/root/.m2
+  #     - ../:/root/cidadesocialserver
+  #   command: /bin/sh -c "while sleep 1000; do :; done"
+  #   restart: unless-stopped
+
+  cspostgres:
+    image: postgres:9.5
+    container_name: cspostgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: campsocialdb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+    - cspostgres-data:/var/lib/postgresql/data
+    ports:
+    - 5432:5432
+    networks:
+      - csnetwork
+
+  cslogstash:
+    image: docker.elastic.co/logstash/logstash:7.12.0
+    container_name: cslogstash
+    restart: always
+    environment:
+      MONITORING_ENABLED: "true"
+    volumes:
+      - ./aux/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./aux/logstash/driver-lib/postgresql-42.3.1.jar:/usr/share/logstash/bin/postgresql-42.3.1.jar
+      - ./aux/logstash/index-templates/geotemplate.json:/usr/share/logstash/index-templates/geotemplate.json
+    ports:
+      - "5044:5044"
+    networks:
+      - csnetwork
+    depends_on:
+      - cselastic
+      - cspostgres
+
+  cselastic: 
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    container_name: cselastic
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits: 
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add: 
+      - IPC_LOCK
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - csnetwork
+  
+  cskibana:
+    image: docker.elastic.co/kibana/kibana:7.12.0
+    container_name: cskibana
+    restart: always
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: http://cselastic:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - csnetwork
+
+volumes:
+  elastic-data:
+    driver: local
+  cspostgres-data:
+    driver: local
+  mvn_deps:
+    driver: local
+
+networks:
+  csnetwork:
