@@ -4,9 +4,6 @@
   ],
   "mappings": {
     "properties": {
-      "geoLocation": {
-        "type": "geo_point"
-      },
       "location": {
         "type": "geo_point"
       }
