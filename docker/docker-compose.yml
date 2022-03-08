@@ -37,9 +37,6 @@ services:
         limits:
           cpus: "0.15"
           memory: 1024M
-        reservations:
-          cpus: "0.10"
-          memory: 512M
     container_name: cspostgres
     restart: always
     environment:
@@ -61,9 +58,6 @@ services:
         limits:
           cpus: "0.30"
           memory: 3072M
-        reservations:
-          cpus: "0.15"
-          memory: 1024M
     container_name: cslogstash
     restart: always
     environment:
@@ -87,9 +81,6 @@ services:
         limits:
           cpus: "0.30"
           memory: 3072M
-        reservations:
-          cpus: "0.15"
-          memory: 1024M
     container_name: cselastic
     restart: always
     environment:
@@ -109,10 +100,6 @@ services:
         limits:
           cpus: "0.15"
           memory: 2048M
-        reservations:
-          cpus: "0.10"
-          memory: 1024M
-
     container_name: cskibana
     restart: always
     environment:
