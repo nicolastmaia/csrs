@@ -1,6 +1,6 @@
 {
   "index_patterns": [
-    "cs-elastic"
+    "topic-post"
   ],
   "mappings": {
     "properties": {
