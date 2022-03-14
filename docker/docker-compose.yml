@@ -1,35 +1,6 @@
 version: '3.8'
 
 services:
-  # DESCOMENTE O SERVICE ABAIXO PARA RODAR O CIDADESOCIAL SERVER EM UM CONTAINER
-  # cs:
-  #   container_name: cidadesocial
-  #   image: 'cidade-social:latest'
-  #   expose:
-  #       - 8080
-  #   ports:
-  #     - 8080:8080
-  #     - 8082:8082
-  #   build:
-  #     context: .
-  #   depends_on:
-  #     - cspostgres
-  #   environment:
-  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://cspostgres:5432/campsocialdb
-  #     - SPRING_DATASOURCE_USERNAME=postgres
-  #     - SPRING_DATASOURCE_PASSWORD=postgres
-  #     - SPRING_DATASOURCE_TOMCAT_TEST_WHILE_IDLE=true
-  #     - SPRING_DATASOURCE_TOMCAT_VALIDATION_QUERY=SELECT 1
-  #     - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
-  #     - SPRING_JPA_DATABASE_PLATAFORM=org.hibernate.dialect.PostgreSQLDialect
-  #     - SPRING_JPA_SHOW_SQL=true
-  #     - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-  #   volumes:
-  #     - mvn_deps:/root/.m2
-  #     - ../:/root/cidadesocialserver
-  #   command: /bin/sh -c "while sleep 1000; do :; done"
-  #   restart: unless-stopped
-
   cspostgres:
     image: postgres:9.5
     deploy:
@@ -114,8 +85,6 @@ volumes:
   elastic-data:
     driver: local
   cspostgres-data:
-    driver: local
-  mvn_deps:
     driver: local
 
 networks:
