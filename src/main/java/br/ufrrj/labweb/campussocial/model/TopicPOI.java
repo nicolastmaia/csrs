@@ -1,4 +1,4 @@
-package br.ufrrj.labweb.campussocial;
+package br.ufrrj.labweb.campussocial.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -10,7 +10,7 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
  * The entity stored in Elasticsearch, a POI of the topic category
  *
  */
-@Document(indexName = "cs-elastic")
+@Document(indexName = "topic-post")
 public class TopicPOI {
   @Id
   private long id;

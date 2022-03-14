@@ -1,8 +1,8 @@
-package br.ufrrj.labweb.campussocial;
+package br.ufrrj.labweb.campussocial.model;
 
 import org.springframework.lang.Nullable;
 
-public class RequestData {
+public class TopicRequestData {
 
     private String title;
     

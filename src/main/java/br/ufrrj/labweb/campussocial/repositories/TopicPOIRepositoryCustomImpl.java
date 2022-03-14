@@ -1,4 +1,4 @@
-package br.ufrrj.labweb.campussocial;
+package br.ufrrj.labweb.campussocial.repositories;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -8,6 +8,8 @@ import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
 import org.springframework.data.elasticsearch.core.query.Query;
+
+import br.ufrrj.labweb.campussocial.model.TopicPOI;
 
 import java.util.List;
 

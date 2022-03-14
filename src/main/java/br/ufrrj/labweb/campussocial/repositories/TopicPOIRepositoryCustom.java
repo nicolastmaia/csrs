@@ -1,7 +1,9 @@
-package br.ufrrj.labweb.campussocial;
+package br.ufrrj.labweb.campussocial.repositories;
 
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
+
+import br.ufrrj.labweb.campussocial.model.TopicPOI;
 
 import java.util.List;
 

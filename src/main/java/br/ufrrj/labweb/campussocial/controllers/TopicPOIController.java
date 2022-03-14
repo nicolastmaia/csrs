@@ -1,4 +1,4 @@
-package br.ufrrj.labweb.campussocial;
+package br.ufrrj.labweb.campussocial.controllers;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import br.ufrrj.labweb.campussocial.model.TopicRequestData;
+import br.ufrrj.labweb.campussocial.model.TopicResultData;
+import br.ufrrj.labweb.campussocial.model.TopicPOI;
+import br.ufrrj.labweb.campussocial.repositories.TopicPOIRepository;
 
 @RestController
 @RequestMapping("/topicpois")
@@ -21,18 +26,18 @@ public class TopicPOIController {
     }
 
     @PostMapping("/within/circle")
-    List<ResultData> withinDistance(@RequestBody RequestData requestData) {
+    List<TopicResultData> withinDistance(@RequestBody TopicRequestData requestData) {
 
         GeoPoint location = new GeoPoint(requestData.getCenterLat(), requestData.getCenterLon());
 
-        List<SearchHit<TopicPOI>> searchHits = repository.searchWithin(location, requestData.distance,
-                requestData.unit);
+        List<SearchHit<TopicPOI>> searchHits = repository.searchWithin(location, requestData.getDistance(),
+                requestData.getUnit());
 
         return toResultData(searchHits);
     }
 
     @PostMapping("/within/square")
-    List<ResultData> withinSquare(@RequestBody RequestData requestData) {
+    List<TopicResultData> withinSquare(@RequestBody TopicRequestData requestData) {
 
         GeoPoint centerPoint = new GeoPoint(requestData.getCenterLat(), requestData.getCenterLon());
 
@@ -40,13 +45,13 @@ public class TopicPOIController {
         GeoPoint bottomRightPoint = new GeoPoint(requestData.getBottomRightLat(), requestData.getBottomRightLon());
 
         List<SearchHit<TopicPOI>> searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint,
-                centerPoint, requestData.unit);
+                centerPoint, requestData.getUnit());
 
         return toResultData(searchHits);
     }
 
     @PostMapping("/bytitle")
-    List<ResultData> byTitle(@RequestBody RequestData requestData) {
+    List<TopicResultData> byTitle(@RequestBody TopicRequestData requestData) {
         String title = requestData.getTitle();
 
         List<SearchHit<TopicPOI>> searchHits = repository.searchByTitle(title);
@@ -54,10 +59,10 @@ public class TopicPOIController {
         return toResultData(searchHits);
     }
 
-    private List<ResultData> toResultData(List<SearchHit<TopicPOI>> searchHits) {
+    private List<TopicResultData> toResultData(List<SearchHit<TopicPOI>> searchHits) {
         return searchHits.stream().map(searchHit -> {
             TopicPOI topicPOI = searchHit.getContent();
-            return new ResultData(topicPOI.getId(), topicPOI.getTitle(),topicPOI.getText(), topicPOI.getLocation());
+            return new TopicResultData(topicPOI.getId(), topicPOI.getTitle(),topicPOI.getText(), topicPOI.getLocation());
         }).collect(Collectors.toList());
     }
 }

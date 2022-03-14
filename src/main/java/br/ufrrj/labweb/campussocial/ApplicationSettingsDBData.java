@@ -7,16 +7,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
+import br.ufrrj.labweb.campussocial.repositories.InterestPOIRepository;
+import br.ufrrj.labweb.campussocial.repositories.TopicPOIRepository;
+
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class ApplicationSettingsDBData implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationSettingsDBData.class);
 
-	private final TopicPOIRepository repository;
+	private final TopicPOIRepository topicRepository;
+	private final InterestPOIRepository interestRepository;
 
-	public ApplicationSettingsDBData(TopicPOIRepository repository) {
-		this.repository = repository;
+	public ApplicationSettingsDBData(TopicPOIRepository topicRepository, InterestPOIRepository interestRepository) {
+		this.topicRepository = topicRepository;
+		this.interestRepository = interestRepository;
 	}
 
 	public static void main(String[] args) {

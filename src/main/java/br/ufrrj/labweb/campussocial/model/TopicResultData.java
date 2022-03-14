@@ -1,27 +1,27 @@
-package br.ufrrj.labweb.campussocial;
+package br.ufrrj.labweb.campussocial.model;
 
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
-public class ResultData {
+public class TopicResultData {
     private long id;
     private String title;
     private String text;
     private GeoPoint location;
 
-    public ResultData(long id, String title, String text, GeoPoint location) {
+    public TopicResultData(long id, String title, String text, GeoPoint location) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.location = location;
     }
     
-    public ResultData(long id, String title, GeoPoint location) {
+    public TopicResultData(long id, String title, GeoPoint location) {
         this.id = id;
         this.title = title;
         this.location = location;
     }
     
-    public ResultData(long id, String title) {
+    public TopicResultData(long id, String title) {
         this.id = id;
         this.title = title;
     }
