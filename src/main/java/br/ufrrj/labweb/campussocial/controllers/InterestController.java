@@ -9,10 +9,7 @@ import br.ufrrj.labweb.campussocial.repositories.InterestRepository;
 @RequestMapping("/interestpois")
 public class InterestController {
 
-    private final InterestRepository repository;
-
     public InterestController(InterestRepository repository) {
-        this.repository = repository;
     }
 
 }

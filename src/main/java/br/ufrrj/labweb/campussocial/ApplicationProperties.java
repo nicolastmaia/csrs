@@ -6,25 +6,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "br.ufrrj.labweb.campussocial")
 public class ApplicationProperties {
-  /** host:port of the Elasticsearch cluster */
-  private String elasticSearchHost;
 
-  /** host:port of a proxy to use */
-  private String elasticSearchProxy;
+    /** host:port of the Elasticsearch cluster */
+    private String elasticSearchHost;
 
-  public String getElasticSearchHost() {
-    return elasticSearchHost;
-  }
+    /** host:port of a proxy to use */
+    private String elasticSearchProxy;
 
-  public void setElasticSearchHost(String elasticSearchHost) {
-    this.elasticSearchHost = elasticSearchHost;
-  }
+    public String getElasticSearchHost() {
+        return elasticSearchHost;
+    }
 
-  public String getElasticSearchProxy() {
-    return elasticSearchProxy;
-  }
+    public void setElasticSearchHost(String elasticSearchHost) {
+        this.elasticSearchHost = elasticSearchHost;
+    }
 
-  public void setElasticSearchProxy(String elasticSearchProxy) {
-    this.elasticSearchProxy = elasticSearchProxy;
-  }
+    public String getElasticSearchProxy() {
+        return elasticSearchProxy;
+    }
+
+    public void setElasticSearchProxy(String elasticSearchProxy) {
+        this.elasticSearchProxy = elasticSearchProxy;
+    }
+
 }

@@ -23,4 +23,5 @@ public interface TopicRepositoryCustom {
             String unit);
 
     List<SearchHit<Topic>> searchByTitle(String title);
+
 }

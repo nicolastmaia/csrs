@@ -12,54 +12,55 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
  */
 @Document(indexName = "topic-post")
 public class Topic {
-  @Id
-  private long id;
 
-  @Field(type = FieldType.Text)
-  private String title;
+    @Id
+    private long id;
 
-  @Field(type = FieldType.Text)
-  private String text;
+    @Field(type = FieldType.Text)
+    private String title;
 
-  private GeoPoint location;
+    @Field(type = FieldType.Text)
+    private String text;
 
-  public Topic(long id, String title, String text, GeoPoint location) {
-    this.id = id;
-    this.title = title;
-    this.text = text;
-    this.location = location;
-  }
+    private GeoPoint location;
 
-  public long getId() {
-    return id;
-  }
+    public Topic(long id, String title, String text, GeoPoint location) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.location = location;
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public String getText() {
-    return text;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public void setText(String text) {
-    this.text = text;
-  }
+    public String getText() {
+        return text;
+    }
 
-  public GeoPoint getLocation() {
-    return location;
-  }
+    public void setText(String text) {
+        this.text = text;
+    }
 
-  public void setLocation(GeoPoint location) {
-    this.location = location;
-  }
+    public GeoPoint getLocation() {
+        return location;
+    }
 
-  public String getTitle() {
-    return title;
-  }
+    public void setLocation(GeoPoint location) {
+        this.location = location;
+    }
 
-  public void setTitle(String title) {
-    this.title = title;
-  }
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
 }

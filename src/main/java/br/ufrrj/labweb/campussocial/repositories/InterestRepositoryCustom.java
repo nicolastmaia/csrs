@@ -9,4 +9,5 @@ import java.util.List;
 public interface InterestRepositoryCustom {
 
     List<SearchHit<Interest>> searchByName(String name);
+
 }

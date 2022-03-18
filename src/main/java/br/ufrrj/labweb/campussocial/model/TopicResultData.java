@@ -3,6 +3,7 @@ package br.ufrrj.labweb.campussocial.model;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 public class TopicResultData {
+
     private long id;
     private String title;
     private String text;
@@ -14,13 +15,13 @@ public class TopicResultData {
         this.text = text;
         this.location = location;
     }
-    
+
     public TopicResultData(long id, String title, GeoPoint location) {
         this.id = id;
         this.title = title;
         this.location = location;
     }
-    
+
     public TopicResultData(long id, String title) {
         this.id = id;
         this.title = title;

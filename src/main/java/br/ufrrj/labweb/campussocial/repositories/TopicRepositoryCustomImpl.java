@@ -55,4 +55,5 @@ public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
 
         return operations.search(query, Topic.class).getSearchHits();
     }
+
 }

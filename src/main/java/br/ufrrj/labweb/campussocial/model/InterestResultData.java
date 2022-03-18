@@ -1,6 +1,7 @@
 package br.ufrrj.labweb.campussocial.model;
 
 public class InterestResultData {
+
     private long id;
     private String name;
 

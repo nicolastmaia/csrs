@@ -13,26 +13,27 @@ import org.springframework.util.StringUtils;
 @Configuration
 public class ElasticsearchConfiguration extends AbstractElasticsearchConfiguration {
 
-  private final ApplicationProperties applicationProperties;
+    private final ApplicationProperties applicationProperties;
 
-  public ElasticsearchConfiguration(ApplicationProperties applicationProperties) {
-    this.applicationProperties = applicationProperties;
-  }
-
-  @Override
-  @Bean
-  public RestHighLevelClient elasticsearchClient() {
-
-    ClientConfiguration.TerminalClientConfigurationBuilder builder = ClientConfiguration.builder()
-        .connectedTo(applicationProperties.getElasticSearchHost());
-
-    if (StringUtils.hasLength(applicationProperties.getElasticSearchProxy())) {
-      builder = builder.withProxy(applicationProperties.getElasticSearchProxy());
+    public ElasticsearchConfiguration(ApplicationProperties applicationProperties) {
+        this.applicationProperties = applicationProperties;
     }
 
-    final ClientConfiguration clientConfiguration = builder.withSocketTimeout(Duration.ofSeconds(60)) //
-        .build();
+    @Override
+    @Bean
+    public RestHighLevelClient elasticsearchClient() {
 
-    return RestClients.create(clientConfiguration).rest();
-  }
+        ClientConfiguration.TerminalClientConfigurationBuilder builder = ClientConfiguration.builder()
+                .connectedTo(applicationProperties.getElasticSearchHost());
+
+        if (StringUtils.hasLength(applicationProperties.getElasticSearchProxy())) {
+            builder = builder.withProxy(applicationProperties.getElasticSearchProxy());
+        }
+
+        final ClientConfiguration clientConfiguration = builder.withSocketTimeout(Duration.ofSeconds(60)) //
+                .build();
+
+        return RestClients.create(clientConfiguration).rest();
+    }
+
 }

@@ -5,7 +5,7 @@ import org.springframework.lang.Nullable;
 public class TopicRequestData {
 
     private String title;
-    
+
     @Nullable
     private String text;
 
@@ -16,7 +16,7 @@ public class TopicRequestData {
     private double topLeftLat;
     @Nullable
     private double topLeftLon;
-    
+
     @Nullable
     private double bottomRightLat;
     @Nullable
@@ -109,4 +109,5 @@ public class TopicRequestData {
     public void setBottomRightLon(double bottomRightLon) {
         this.bottomRightLon = bottomRightLon;
     }
+
 }
