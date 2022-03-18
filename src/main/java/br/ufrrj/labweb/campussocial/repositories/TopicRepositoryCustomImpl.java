@@ -9,21 +9,21 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
 import org.springframework.data.elasticsearch.core.query.Query;
 
-import br.ufrrj.labweb.campussocial.model.TopicPOI;
+import br.ufrrj.labweb.campussocial.model.Topic;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class TopicPOIRepositoryCustomImpl implements TopicPOIRepositoryCustom {
+public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
 
     private final ElasticsearchOperations operations;
 
-    public TopicPOIRepositoryCustomImpl(ElasticsearchOperations operations) {
+    public TopicRepositoryCustomImpl(ElasticsearchOperations operations) {
         this.operations = operations;
     }
 
     @Override
-    public List<SearchHit<TopicPOI>> searchWithin(GeoPoint geoPoint, Double distance, String unit) {
+    public List<SearchHit<Topic>> searchWithin(GeoPoint geoPoint, Double distance, String unit) {
 
         Query query = new CriteriaQuery(new Criteria("location").within(geoPoint, distance.toString() + unit));
 
@@ -31,11 +31,11 @@ public class TopicPOIRepositoryCustomImpl implements TopicPOIRepositoryCustom {
         Sort sort = Sort.by(new GeoDistanceOrder("location", geoPoint).withUnit(unit));
         query.addSort(sort);
 
-        return operations.search(query, TopicPOI.class).getSearchHits();
+        return operations.search(query, Topic.class).getSearchHits();
     }
 
     @Override
-    public List<SearchHit<TopicPOI>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
+    public List<SearchHit<Topic>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
             String unit) {
 
         Query query = new CriteriaQuery(new Criteria("location").boundedBy(geoPoint1, geoPoint2));
@@ -44,15 +44,15 @@ public class TopicPOIRepositoryCustomImpl implements TopicPOIRepositoryCustom {
         Sort sort = Sort.by(new GeoDistanceOrder("location", centerPoint).withUnit(unit));
         query.addSort(sort);
 
-        return operations.search(query, TopicPOI.class).getSearchHits();
+        return operations.search(query, Topic.class).getSearchHits();
     }
 
     @Override
-    public List<SearchHit<TopicPOI>> searchByTitle(String title) {
+    public List<SearchHit<Topic>> searchByTitle(String title) {
         String[] splitTitle = title.split(" ");
         Criteria criteria = new Criteria("title").contains(splitTitle[0]).or(new Criteria("title").expression(title));
         Query query = new CriteriaQuery(criteria);
 
-        return operations.search(query, TopicPOI.class).getSearchHits();
+        return operations.search(query, Topic.class).getSearchHits();
     }
 }

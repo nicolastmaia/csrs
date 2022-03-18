@@ -10,7 +10,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  *
  */
 @Document(indexName = "interest-post")
-public class InterestPOI {
+public class Interest {
   
   @Id
   private long id;
@@ -24,7 +24,7 @@ public class InterestPOI {
   @Field(type = FieldType.Text)
   private String interest_name;
 
-  public InterestPOI(long id, long post_id, long interest_id, String interest_name) {
+  public Interest(long id, long post_id, long interest_id, String interest_name) {
     this.id = id;
     this.post_id = post_id;
     this.interest_id = interest_id;

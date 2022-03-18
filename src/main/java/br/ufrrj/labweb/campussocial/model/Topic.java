@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
  *
  */
 @Document(indexName = "topic-post")
-public class TopicPOI {
+public class Topic {
   @Id
   private long id;
 
@@ -23,7 +23,7 @@ public class TopicPOI {
 
   private GeoPoint location;
 
-  public TopicPOI(long id, String title, String text, GeoPoint location) {
+  public Topic(long id, String title, String text, GeoPoint location) {
     this.id = id;
     this.title = title;
     this.text = text;

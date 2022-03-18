@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.ufrrj.labweb.campussocial.model.TopicRequestData;
 import br.ufrrj.labweb.campussocial.model.TopicResultData;
-import br.ufrrj.labweb.campussocial.model.TopicPOI;
-import br.ufrrj.labweb.campussocial.repositories.TopicPOIRepository;
+import br.ufrrj.labweb.campussocial.model.Topic;
+import br.ufrrj.labweb.campussocial.repositories.TopicRepository;
 
 @RestController
 @RequestMapping("/topicpois")
-public class TopicPOIController {
+public class TopicController {
 
-    private final TopicPOIRepository repository;
+    private final TopicRepository repository;
 
-    public TopicPOIController(TopicPOIRepository repository) {
+    public TopicController(TopicRepository repository) {
         this.repository = repository;
     }
 
@@ -30,7 +30,7 @@ public class TopicPOIController {
 
         GeoPoint location = new GeoPoint(requestData.getCenterLat(), requestData.getCenterLon());
 
-        List<SearchHit<TopicPOI>> searchHits = repository.searchWithin(location, requestData.getDistance(),
+        List<SearchHit<Topic>> searchHits = repository.searchWithin(location, requestData.getDistance(),
                 requestData.getUnit());
 
         return toResultData(searchHits);
@@ -44,7 +44,7 @@ public class TopicPOIController {
         GeoPoint topLeftPoint = new GeoPoint(requestData.getTopLeftLat(), requestData.getTopLeftLon());
         GeoPoint bottomRightPoint = new GeoPoint(requestData.getBottomRightLat(), requestData.getBottomRightLon());
 
-        List<SearchHit<TopicPOI>> searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint,
+        List<SearchHit<Topic>> searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint,
                 centerPoint, requestData.getUnit());
 
         return toResultData(searchHits);
@@ -54,14 +54,14 @@ public class TopicPOIController {
     List<TopicResultData> byTitle(@RequestBody TopicRequestData requestData) {
         String title = requestData.getTitle();
 
-        List<SearchHit<TopicPOI>> searchHits = repository.searchByTitle(title);
+        List<SearchHit<Topic>> searchHits = repository.searchByTitle(title);
 
         return toResultData(searchHits);
     }
 
-    private List<TopicResultData> toResultData(List<SearchHit<TopicPOI>> searchHits) {
+    private List<TopicResultData> toResultData(List<SearchHit<Topic>> searchHits) {
         return searchHits.stream().map(searchHit -> {
-            TopicPOI topicPOI = searchHit.getContent();
+            Topic topicPOI = searchHit.getContent();
             return new TopicResultData(topicPOI.getId(), topicPOI.getTitle(),topicPOI.getText(), topicPOI.getLocation());
         }).collect(Collectors.toList());
     }

@@ -9,25 +9,25 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
 import org.springframework.data.elasticsearch.core.query.Query;
 
-import br.ufrrj.labweb.campussocial.model.InterestPOI;
+import br.ufrrj.labweb.campussocial.model.Interest;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class InterestPOIRepositoryCustomImpl implements InterestPOIRepositoryCustom {
+public class InterestRepositoryCustomImpl implements InterestRepositoryCustom {
 
     private final ElasticsearchOperations operations;
 
-    public InterestPOIRepositoryCustomImpl(ElasticsearchOperations operations) {
+    public InterestRepositoryCustomImpl(ElasticsearchOperations operations) {
         this.operations = operations;
     }
 
     @Override
-    public List<SearchHit<InterestPOI>> searchByName(String name) {
+    public List<SearchHit<Interest>> searchByName(String name) {
         String[] splitName = name.split(" ");
         Criteria criteria = new Criteria("name").contains(splitName[0]).or(new Criteria("name").expression(name));
         Query query = new CriteriaQuery(criteria);
 
-        return operations.search(query, InterestPOI.class).getSearchHits();
+        return operations.search(query, Interest.class).getSearchHits();
     }
 }
