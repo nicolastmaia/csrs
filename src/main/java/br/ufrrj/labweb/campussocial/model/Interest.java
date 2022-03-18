@@ -13,7 +13,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class Interest {
 
     @Id
-    private long id;
+    private String id;
 
     @Field(type = FieldType.Integer)
     private long post_id;
@@ -24,18 +24,18 @@ public class Interest {
     @Field(type = FieldType.Text)
     private String interest_name;
 
-    public Interest(long id, long post_id, long interest_id, String interest_name) {
+    public Interest(String id, long post_id, long interest_id, String interest_name) {
         this.id = id;
         this.post_id = post_id;
         this.interest_id = interest_id;
         this.interest_name = interest_name;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -55,11 +55,11 @@ public class Interest {
         this.interest_id = interest_id;
     }
 
-    public String getInteret_name() {
+    public String getInterest_name() {
         return interest_name;
     }
 
-    public void setInteret_name(String interest_name) {
+    public void setInterest_name(String interest_name) {
         this.interest_name = interest_name;
     }
 

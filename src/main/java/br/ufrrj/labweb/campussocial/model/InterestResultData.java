@@ -2,28 +2,53 @@ package br.ufrrj.labweb.campussocial.model;
 
 public class InterestResultData {
 
-    private long id;
-    private String name;
+    private String id;
+    private long post_id;
+    private long interest_id;
+    private String interest_name;
 
-    public InterestResultData(long id, String name) {
+    public InterestResultData(String id, long post_id, long interest_id, String interest_name) {
         this.id = id;
-        this.name = name;
+        this.post_id = post_id;
+        this.interest_id = interest_id;
+        this.interest_name = interest_name;
     }
 
-    public long getId() {
+    public InterestResultData(String id, String interest_name) {
+        this.id = id;
+        this.interest_name = interest_name;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public long getPost_id() {
+        return post_id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPost_id(long post_id) {
+        this.post_id = post_id;
+    }
+
+    public long getInterest_id() {
+        return interest_id;
+    }
+
+    public void setInterest_id(long interest_id) {
+        this.interest_id = interest_id;
+    }
+
+    public String getInterest_name() {
+        return interest_name;
+    }
+
+    public void setInterest_name(String interest_name) {
+        this.interest_name = interest_name;
     }
 
 }
