@@ -2,12 +2,17 @@ package br.ufrrj.labweb.campussocial.model;
 
 import java.util.List;
 
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 public class InterestRequestData {
 
-    @NonNull
+    @Nullable
     private List<String> nameList;
+
+    @Nullable
+    private List<Long> interestIdList;
+
+    @Nullable
     private List<Long> postIdList;
 
     public void setPostIdList(List<Long> postIdList) {
@@ -24,6 +29,14 @@ public class InterestRequestData {
 
     public List<Long> getPostIdList() {
         return postIdList;
+    }
+
+    public List<Long> getInterestIdList() {
+        return interestIdList;
+    }
+
+    public void setInterestIdList(List<Long> interestIdList) {
+        this.interestIdList = interestIdList;
     }
 
 }

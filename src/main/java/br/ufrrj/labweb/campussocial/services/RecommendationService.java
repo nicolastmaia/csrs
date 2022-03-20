@@ -24,7 +24,7 @@ public class RecommendationService {
     this.interestService = interestService;
   }
 
-  public List<SearchHit<Topic>> getRecommendedTopics(List<Long> interestList, double topLeftLat,
+  public List<SearchHit<Topic>> getRecommendedTopics(List<Long> interestIdList, double topLeftLat,
       double topLeftLon,
       double bottomRightLat, double bottomRightLon, double centerLat, double centerLon, String unit) {
 
@@ -42,28 +42,22 @@ public class RecommendationService {
     }).collect(Collectors.toList());
 
     // get list of interests of found topics
-    List<SearchHit<Interest>> topicsInterests = interestService.getByPostIdList(postIdList);
+    List<SearchHit<Interest>> topicsInterests = interestService.getByPostIdListAndInterestIdList(postIdList,
+        interestIdList);
 
-    // filter topicsInterests whose name is present in interestsList
-    List<SearchHit<Interest>> filteredTopicsInterests = topicsInterests.stream().filter(searchHit -> {
-      Interest interestPOI = searchHit.getContent();
-
-      return interestList.contains(interestPOI.getInterest_id());
-    }).collect(Collectors.toList());
-
-    List<Long> filteredTopicsInterestsPostIds = filteredTopicsInterests.stream().map(searchHit -> {
+    List<Long> topicsInterestsPostIds = topicsInterests.stream().map(searchHit -> {
       Interest interestPOI = searchHit.getContent();
 
       return interestPOI.getPost_id();
     }).collect(Collectors.toList());
 
-    Set<Long> filteredTopicsInterestsPostIdsSet = new HashSet<>(filteredTopicsInterestsPostIds);
+    Set<Long> topicsInterestsPostIdsSet = new HashSet<>(topicsInterestsPostIds);
 
     // filter topicsInterests that are present in interesList
     List<SearchHit<Topic>> recommendedTopics = topicSearchHits.stream().filter(searchHit -> {
       Topic topicPOI = searchHit.getContent();
 
-      return filteredTopicsInterestsPostIdsSet.contains(topicPOI.getId());
+      return topicsInterestsPostIdsSet.contains(topicPOI.getId());
     }).collect(Collectors.toList());
 
     return recommendedTopics;

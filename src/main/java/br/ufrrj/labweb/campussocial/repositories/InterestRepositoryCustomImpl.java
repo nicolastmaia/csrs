@@ -37,4 +37,22 @@ public class InterestRepositoryCustomImpl implements InterestRepositoryCustom {
 
         return operations.search(query, Interest.class).getSearchHits();
     }
+
+    @Override
+    public List<SearchHit<Interest>> searchByInterestIdList(List<Long> interestIdList) {
+        Criteria criteria = new Criteria("interest_id").in(interestIdList);
+        Query query = new CriteriaQuery(criteria);
+
+        return operations.search(query, Interest.class).getSearchHits();
+    }
+
+    @Override
+    public List<SearchHit<Interest>> searchByPostIdListAndInterestIdList(List<Long> postIdList,
+            List<Long> interestIdList) {
+        Criteria criteria = new Criteria("post_id").in(postIdList).and("interest_id").in(interestIdList);
+        Query query = new CriteriaQuery(criteria);
+
+        return operations.search(query, Interest.class).getSearchHits();
+    }
+
 }

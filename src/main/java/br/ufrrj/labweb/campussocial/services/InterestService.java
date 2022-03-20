@@ -31,6 +31,13 @@ public class InterestService {
     return searchHits;
   }
 
+  public List<SearchHit<Interest>> getByPostIdListAndInterestIdList(List<Long> postIdList,
+      List<Long> interestIdList) {
+    List<SearchHit<Interest>> searchHits = repository.searchByPostIdListAndInterestIdList(postIdList, interestIdList);
+
+    return searchHits;
+  }
+
   public List<InterestResultData> toResultData(List<SearchHit<Interest>> searchHits) {
     return searchHits.stream().map(searchHit -> {
       Interest interestPOI = searchHit.getContent();
