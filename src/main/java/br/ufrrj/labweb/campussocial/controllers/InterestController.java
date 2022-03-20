@@ -23,14 +23,6 @@ public class InterestController {
         this.interestService = interestService;
     }
 
-    @PostMapping("/byname")
-    List<InterestResultData> getByName(@RequestBody InterestRequestData requestData) {
-        List<SearchHit<Interest>> searchHits = interestService.getByName(requestData.getName());
-
-        return interestService.toResultData(searchHits);
-
-    }
-
     @PostMapping("/bynamelist")
     List<InterestResultData> getByNamelist(@RequestBody InterestRequestData requestData) {
         List<SearchHit<Interest>> searchHits = interestService.getByNameList(requestData.getNameList());

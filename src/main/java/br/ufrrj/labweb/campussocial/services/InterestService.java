@@ -19,12 +19,6 @@ public class InterestService {
     this.repository = repository;
   }
 
-  public List<SearchHit<Interest>> getByName(String interestName) {
-    List<SearchHit<Interest>> searchHits = repository.searchByName(interestName);
-
-    return searchHits;
-  }
-
   public List<SearchHit<Interest>> getByNameList(List<String> interestNameList) {
     List<SearchHit<Interest>> searchHits = repository.searchByNameList(interestNameList);
 

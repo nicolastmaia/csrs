@@ -23,16 +23,6 @@ public class InterestRepositoryCustomImpl implements InterestRepositoryCustom {
     }
 
     @Override
-    public List<SearchHit<Interest>> searchByName(String interestName) {
-        String[] splitName = interestName.split(" ");
-        Criteria criteria = new Criteria("interest_name").contains(splitName[0])
-                .or(new Criteria("interest_name").expression(interestName));
-        Query query = new CriteriaQuery(criteria);
-
-        return operations.search(query, Interest.class).getSearchHits();
-    }
-
-    @Override
     public List<SearchHit<Interest>> searchByNameList(List<String> interestNameList) {
         Criteria criteria = new Criteria("interest_name").in(interestNameList);
         Query query = new CriteriaQuery(criteria);
