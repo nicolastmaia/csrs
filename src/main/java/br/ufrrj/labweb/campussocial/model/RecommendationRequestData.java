@@ -1,11 +1,14 @@
 package br.ufrrj.labweb.campussocial.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.lang.Nullable;
 
 public class RecommendationRequestData {
 
   @Nullable
-  private long[] interestList;
+  private List<Long> interestList;
 
   @Nullable
   private double centerLat;
@@ -27,23 +30,19 @@ public class RecommendationRequestData {
   @Nullable
   private String unit;
 
-  public long[] getInterestList() {
+  public List<Long> getInterestList() {
     return interestList;
   }
 
-  public void setInterestList(long[] interestList) {
+  public void setInterestList(List<Long> interestList) {
     this.interestList = interestList;
   }
 
-  public void addInterest(long interest) {
+  public void addInterest(Long interest) {
     if (interestList == null) {
-      interestList = new long[1];
-    } else {
-      long[] newInterestList = new long[interestList.length + 1];
-      System.arraycopy(interestList, 0, newInterestList, 0, interestList.length);
-      interestList = newInterestList;
+      interestList = new ArrayList<>();
     }
-    interestList[interestList.length - 1] = interest;
+    interestList.add(interest);
   }
 
   public double getCenterLat() {
