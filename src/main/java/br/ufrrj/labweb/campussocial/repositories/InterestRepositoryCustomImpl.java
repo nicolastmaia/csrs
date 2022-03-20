@@ -29,4 +29,12 @@ public class InterestRepositoryCustomImpl implements InterestRepositoryCustom {
 
         return operations.search(query, Interest.class).getSearchHits();
     }
+
+    @Override
+    public List<SearchHit<Interest>> searchByPostIdList(List<Long> postIdList) {
+        Criteria criteria = new Criteria("post_id").in(postIdList);
+        Query query = new CriteriaQuery(criteria);
+
+        return operations.search(query, Interest.class).getSearchHits();
+    }
 }

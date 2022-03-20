@@ -10,4 +10,6 @@ public interface InterestRepositoryCustom {
 
     List<SearchHit<Interest>> searchByNameList(List<String> nameList);
 
+    List<SearchHit<Interest>> searchByPostIdList(List<Long> postIdList);
+
 }

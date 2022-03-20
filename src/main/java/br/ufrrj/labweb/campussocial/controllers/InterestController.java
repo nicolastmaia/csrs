@@ -31,4 +31,11 @@ public class InterestController {
 
     }
 
+    @PostMapping("/bypostidlist")
+    List<InterestResultData> getByPostIdList(@RequestBody InterestRequestData requestData) {
+        List<SearchHit<Interest>> searchHits = interestService.getByPostIdList(requestData.getPostIdList());
+
+        return interestService.toResultData(searchHits);
+    }
+
 }
