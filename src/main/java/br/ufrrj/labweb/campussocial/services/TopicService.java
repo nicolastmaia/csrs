@@ -20,16 +20,16 @@ public class TopicService {
         this.repository = repository;
     }
 
-    public List<TopicResultData> getWithinDistance(double centerLat, double centerLon, double distance, String unit) {
+    public List<SearchHit<Topic>> getWithinDistance(double centerLat, double centerLon, double distance, String unit) {
 
         GeoPoint location = new GeoPoint(centerLat, centerLon);
 
         List<SearchHit<Topic>> searchHits = repository.searchWithin(location, distance, unit);
 
-        return toResultData(searchHits);
+        return searchHits;
     }
 
-    public List<TopicResultData> getWithinSquare(double topLeftLat, double topLeftLon, double bottomRightLat,
+    public List<SearchHit<Topic>> getWithinSquare(double topLeftLat, double topLeftLon, double bottomRightLat,
             double bottomRightLon, double centerLat, double centerLon, String unit) {
 
         GeoPoint centerPoint = new GeoPoint(centerLat, centerLon);
@@ -40,16 +40,17 @@ public class TopicService {
         List<SearchHit<Topic>> searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint,
                 centerPoint, unit);
 
-        return toResultData(searchHits);
+        return searchHits;
     }
 
-    public List<TopicResultData> getByTitle(String title) {
+    public List<SearchHit<Topic>> getByTitle(String title) {
+
         List<SearchHit<Topic>> searchHits = repository.searchByTitle(title);
 
-        return toResultData(searchHits);
+        return searchHits;
     }
 
-    private List<TopicResultData> toResultData(List<SearchHit<Topic>> searchHits) {
+    public List<TopicResultData> toResultData(List<SearchHit<Topic>> searchHits) {
         return searchHits.stream().map(searchHit -> {
             Topic topicPOI = searchHit.getContent();
             return new TopicResultData(topicPOI.getId(), topicPOI.getTitle(), topicPOI.getText(),

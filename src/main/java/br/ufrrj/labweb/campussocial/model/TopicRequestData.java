@@ -22,6 +22,7 @@ public class TopicRequestData {
     @Nullable
     private double bottomRightLon;
 
+    // TODO: check if possible to make private
     @Nullable
     Double distance;
     @Nullable

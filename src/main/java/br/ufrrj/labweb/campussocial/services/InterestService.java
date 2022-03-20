@@ -19,13 +19,19 @@ public class InterestService {
     this.repository = repository;
   }
 
-  public List<InterestResultData> getByName(String interestName) {
+  public List<SearchHit<Interest>> getByName(String interestName) {
     List<SearchHit<Interest>> searchHits = repository.searchByName(interestName);
 
-    return toResultData(searchHits);
+    return searchHits;
   }
 
-  private List<InterestResultData> toResultData(List<SearchHit<Interest>> searchHits) {
+  public List<SearchHit<Interest>> getByNameList(List<String> interestNameList) {
+    List<SearchHit<Interest>> searchHits = repository.searchByNameList(interestNameList);
+
+    return searchHits;
+  }
+
+  public List<InterestResultData> toResultData(List<SearchHit<Interest>> searchHits) {
     return searchHits.stream().map(searchHit -> {
       Interest interestPOI = searchHit.getContent();
       return new InterestResultData(interestPOI.getId(), interestPOI.getPost_id(), interestPOI.getInterest_id(),
