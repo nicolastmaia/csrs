@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import br.ufrrj.labweb.campussocial.model.Interest;
 import br.ufrrj.labweb.campussocial.model.RecommendationResultData;
 import br.ufrrj.labweb.campussocial.model.Topic;
-import br.ufrrj.labweb.campussocial.model.TopicResultData;
 
 @Service
 public class RecommendationService {
@@ -24,7 +23,7 @@ public class RecommendationService {
     this.interestService = interestService;
   }
 
-  public List<SearchHit<Topic>> getRecommendedTopics(List<Long> interestIdList, double topLeftLat,
+  public List<RecommendationResultData> getRecommendedTopics(List<Long> interestIdList, double topLeftLat,
       double topLeftLon,
       double bottomRightLat, double bottomRightLon, double centerLat, double centerLon, String unit) {
 
@@ -53,17 +52,25 @@ public class RecommendationService {
 
     Set<Long> topicsInterestsPostIdsSet = new HashSet<>(topicsInterestsPostIds);
 
-    // filter topicsInterests that are present in interesList
     List<SearchHit<Topic>> recommendedTopics = topicSearchHits.stream().filter(searchHit -> {
       Topic topicPOI = searchHit.getContent();
 
       return topicsInterestsPostIdsSet.contains(topicPOI.getId());
     }).collect(Collectors.toList());
 
-    return recommendedTopics;
+    List<RecommendationResultData> recommendation = recommendedTopics.stream().map(topic -> {
+
+      List<Interest> topicInterestList = topicsInterests.stream().filter(topicInterest -> {
+        return topicInterest.getContent().getPost_id() == topic.getContent().getId();
+      }).map(topicInterest -> topicInterest.getContent()).collect(Collectors.toList());
+
+      Topic topicPOI = topic.getContent();
+
+      return new RecommendationResultData(topicPOI, topicInterestList);
+
+    }).collect(Collectors.toList());
+
+    return recommendation;
   }
 
-  private List<RecommendationResultData> toResultData(List<SearchHit<Topic>> searchHits) {
-    return null;
-  }
 }
