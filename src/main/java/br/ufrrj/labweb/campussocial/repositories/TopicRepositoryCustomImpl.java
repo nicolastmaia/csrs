@@ -36,9 +36,13 @@ public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
 
     @Override
     public List<SearchHit<Topic>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
-            String unit) {
+            String unit, long lowerBound, long upperBound) {
 
         Query query = new CriteriaQuery(new Criteria("location").boundedBy(geoPoint1, geoPoint2));
+
+        if (lowerBound > 0 && upperBound > 0) {
+            addTimestampLimit(query, lowerBound, upperBound);
+        }
 
         // add a sort to get the actual distance back in the sort value
         Sort sort = Sort.by(new GeoDistanceOrder("location", centerPoint).withUnit(unit));
@@ -56,4 +60,11 @@ public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
         return operations.search(query, Topic.class).getSearchHits();
     }
 
+    private Query addTimestampLimit(Query query, long lowerBound, long upperBound) {
+        Criteria timestampCriteria = new Criteria("modified_at").between(lowerBound, upperBound);
+
+        ((CriteriaQuery) query).addCriteria(timestampCriteria);
+
+        return query;
+    }
 }

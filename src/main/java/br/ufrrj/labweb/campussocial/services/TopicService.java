@@ -30,7 +30,7 @@ public class TopicService {
     }
 
     public List<SearchHit<Topic>> getWithinSquare(double topLeftLat, double topLeftLon, double bottomRightLat,
-            double bottomRightLon, double centerLat, double centerLon, String unit) {
+            double bottomRightLon, double centerLat, double centerLon, String unit, long lowerBound, long upperBound) {
 
         GeoPoint centerPoint = new GeoPoint(centerLat, centerLon);
 
@@ -38,7 +38,7 @@ public class TopicService {
         GeoPoint bottomRightPoint = new GeoPoint(bottomRightLat, bottomRightLon);
 
         List<SearchHit<Topic>> searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint,
-                centerPoint, unit);
+                centerPoint, unit, lowerBound, upperBound);
 
         return searchHits;
     }

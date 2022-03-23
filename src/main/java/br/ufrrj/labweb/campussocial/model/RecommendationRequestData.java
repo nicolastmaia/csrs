@@ -30,6 +30,12 @@ public class RecommendationRequestData {
   @Nullable
   private String unit;
 
+  @Nullable
+  private long timestampLowerBound;
+
+  @Nullable
+  private long timestampUpperBound;
+
   public List<Long> getInterestList() {
     return interestList;
   }
@@ -107,6 +113,22 @@ public class RecommendationRequestData {
 
   public void setUnit(String unit) {
     this.unit = unit;
+  }
+
+  public long getTimestampLowerBound() {
+    return timestampLowerBound;
+  }
+
+  public void setTimestampLowerBound(long timestampLowerBound) {
+    this.timestampLowerBound = timestampLowerBound;
+  }
+
+  public long getTimestampUpperBound() {
+    return timestampUpperBound;
+  }
+
+  public void setTimestampUpperBound(long timestampUpperBound) {
+    this.timestampUpperBound = timestampUpperBound;
   }
 
 }

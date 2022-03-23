@@ -39,7 +39,8 @@ public class TopicController {
         List<SearchHit<Topic>> searchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
                 requestData.getTopLeftLon(),
                 requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
-                requestData.getCenterLon(), requestData.getUnit());
+                requestData.getCenterLon(), requestData.getUnit(), requestData.gettimestampLowerBound(),
+                requestData.getTimestampUpperBound());
 
         return topicService.toResultData(searchHits);
     }

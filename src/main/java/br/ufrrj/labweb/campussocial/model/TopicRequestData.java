@@ -28,6 +28,12 @@ public class TopicRequestData {
     @Nullable
     String unit;
 
+    @Nullable
+    long timestampLowerBound;
+
+    @Nullable
+    long timestampUpperBound;
+
     public String getTitle() {
         return title;
     }
@@ -109,6 +115,22 @@ public class TopicRequestData {
 
     public void setBottomRightLon(double bottomRightLon) {
         this.bottomRightLon = bottomRightLon;
+    }
+
+    public long gettimestampLowerBound() {
+        return timestampLowerBound;
+    }
+
+    public void settimestampLowerBound(@Nullable long timestampLowerBound) {
+        this.timestampLowerBound = timestampLowerBound;
+    }
+
+    public long getTimestampUpperBound() {
+        return timestampUpperBound;
+    }
+
+    public void setTimestampUpperBound(@Nullable long timestampUpperBound) {
+        this.timestampUpperBound = timestampUpperBound;
     }
 
 }

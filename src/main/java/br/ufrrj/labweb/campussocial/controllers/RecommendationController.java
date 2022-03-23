@@ -38,7 +38,8 @@ public class RecommendationController {
     List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
         requestData.getTopLeftLon(),
         requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
-        requestData.getCenterLon(), requestData.getUnit());
+        requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
+        requestData.getTimestampUpperBound());
 
     // get list of post ids of found topics
     List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {

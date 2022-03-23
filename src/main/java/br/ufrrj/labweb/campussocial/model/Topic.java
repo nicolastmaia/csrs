@@ -22,13 +22,16 @@ public class Topic {
     @Field(type = FieldType.Text)
     private String text;
 
+    private String modified_at;
+
     private GeoPoint location;
 
-    public Topic(long id, String title, String text, GeoPoint location) {
+    public Topic(long id, String title, String text, GeoPoint location, String modified_at) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.location = location;
+        this.modified_at = modified_at;
     }
 
     public long getId() {
@@ -61,6 +64,14 @@ public class Topic {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getModified_at() {
+        return modified_at;
+    }
+
+    public void setModified_at(String modified_at) {
+        this.modified_at = modified_at;
     }
 
 }
