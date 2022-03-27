@@ -1,7 +1,9 @@
 package br.ufrrj.labweb.campussocial.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,27 +36,43 @@ public class RecommendationController {
   @RequestMapping("/topics")
   List<RecommendationResultData> getRecommendedTopics(@RequestBody RecommendationRequestData requestData) {
 
-    // get topics within square
-    List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
-        requestData.getTopLeftLon(),
-        requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
-        requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
-        requestData.getTimestampUpperBound());
+    List<SearchHit<Topic>> recommendedTopics = new ArrayList<SearchHit<Topic>>();
+    List<SearchHit<Interest>> interestSearchHits = new ArrayList<SearchHit<Interest>>();
+    Boolean limitBiggerThanRegistries = false;
 
-    // get list of post ids of found topics
-    List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {
-      Topic topicPOI = searchHit.getContent();
+    while (recommendedTopics.size() < requestData.getPageUpperBound() && !limitBiggerThanRegistries) {
 
-      return topicPOI.getId();
-    }).collect(Collectors.toList());
+      // get topics within square
+      List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
+          requestData.getTopLeftLon(),
+          requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
+          requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
+          requestData.getTimestampUpperBound(), requestData.getPageLowerBound(), requestData.getPageUpperBound());
 
-    // get list of interests of found topics
-    List<SearchHit<Interest>> interestSearchHits = interestService.getByPostIdListAndInterestIdList(postIdList,
-        requestData.getInterestList());
+      limitBiggerThanRegistries = topicSearchHits.size() < requestData.getPageUpperBound() ? true : false;
 
-    // get recommended topics
-    List<SearchHit<Topic>> recommendedTopics = recommendationService.recommendTopics(topicSearchHits,
-        interestSearchHits);
+      // get list of post ids of found topics
+      List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {
+        Topic topicPOI = searchHit.getContent();
+        return topicPOI.getId();
+      }).collect(Collectors.toList());
+
+      // get list of interests of found topics
+      interestSearchHits = Stream.concat(interestSearchHits.stream(),
+          interestService.getByPostIdListAndInterestIdList(postIdList,
+              requestData.getInterestList()).stream())
+          .collect(Collectors.toList());
+
+      // get recommended topics
+      recommendedTopics = Stream.concat(recommendedTopics.stream(),
+          recommendationService.recommendTopics(topicSearchHits,
+              interestSearchHits).stream())
+          .collect(Collectors.toList());
+    }
+
+    if (recommendedTopics.size() > requestData.getPageUpperBound()) {
+      recommendedTopics = recommendedTopics.subList(0, requestData.getPageUpperBound());
+    }
 
     return recommendationService.toResultData(recommendedTopics, interestSearchHits);
 

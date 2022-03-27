@@ -1,5 +1,7 @@
 package br.ufrrj.labweb.campussocial.repositories;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -36,17 +38,24 @@ public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
 
     @Override
     public List<SearchHit<Topic>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
-            String unit, long lowerBound, long upperBound) {
+            String unit, long timestampLowerBound, long timestampUpperBound, int pageLowerBound, int pageUpperBound) {
 
         Query query = new CriteriaQuery(new Criteria("location").boundedBy(geoPoint1, geoPoint2));
 
-        if (lowerBound > 0 && upperBound > 0) {
-            addTimestampLimit(query, lowerBound, upperBound);
+        if (timestampLowerBound > 0 && timestampUpperBound > 0) {
+            addTimestampLimit(query, timestampLowerBound, timestampUpperBound);
         }
 
         // add a sort to get the actual distance back in the sort value
         Sort sort = Sort.by(new GeoDistanceOrder("location", centerPoint).withUnit(unit));
-        query.addSort(sort);
+
+        // add pageable option
+        if (pageUpperBound > 0) {
+            Pageable pageable = PageRequest.of(pageLowerBound, pageUpperBound, sort);
+            query.setPageable(pageable);
+        } else {
+            query.addSort(sort);
+        }
 
         return operations.search(query, Topic.class).getSearchHits();
     }
@@ -60,8 +69,8 @@ public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
         return operations.search(query, Topic.class).getSearchHits();
     }
 
-    private Query addTimestampLimit(Query query, long lowerBound, long upperBound) {
-        Criteria timestampCriteria = new Criteria("modified_at").between(lowerBound, upperBound);
+    private Query addTimestampLimit(Query query, long timestampLowerBound, long timestampUpperBound) {
+        Criteria timestampCriteria = new Criteria("modified_at").between(timestampLowerBound, timestampUpperBound);
 
         ((CriteriaQuery) query).addCriteria(timestampCriteria);
 

@@ -40,7 +40,7 @@ public class TopicController {
                 requestData.getTopLeftLon(),
                 requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
                 requestData.getCenterLon(), requestData.getUnit(), requestData.gettimestampLowerBound(),
-                requestData.getTimestampUpperBound());
+                requestData.getTimestampUpperBound(), requestData.getPageLowerBound(), requestData.getPageUpperBound());
 
         return topicService.toResultData(searchHits);
     }

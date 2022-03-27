@@ -34,6 +34,12 @@ public class TopicRequestData {
     @Nullable
     long timestampUpperBound;
 
+    @Nullable
+    int pageLowerBound;
+
+    @Nullable
+    int pageUpperBound;
+
     public String getTitle() {
         return title;
     }
@@ -133,4 +139,19 @@ public class TopicRequestData {
         this.timestampUpperBound = timestampUpperBound;
     }
 
+    public int getPageLowerBound() {
+        return pageLowerBound;
+    }
+
+    public void setPageLowerBound(int pageLowerBound) {
+        this.pageLowerBound = pageLowerBound;
+    }
+
+    public int getPageUpperBound() {
+        return pageUpperBound;
+    }
+
+    public void setPageUpperBound(int pageUpperBound) {
+        this.pageUpperBound = pageUpperBound;
+    }
 }
