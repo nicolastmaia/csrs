@@ -61,6 +61,7 @@ public class RecommendationController {
         return topicPOI.getId();
       }).collect(Collectors.toList());
 
+      // get user's interest list received in request
       List<Long> interestList = requestData.getInterestList();
 
       // get list of interests of found topics and concat with the list of the
