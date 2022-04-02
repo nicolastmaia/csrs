@@ -35,10 +35,10 @@ public class TopicRequestData {
     long timestampUpperBound;
 
     @Nullable
-    int pageLowerBound;
+    int pageStart;
 
     @Nullable
-    int pageUpperBound;
+    int pageOffset;
 
     public String getTitle() {
         return title;
@@ -139,19 +139,19 @@ public class TopicRequestData {
         this.timestampUpperBound = timestampUpperBound;
     }
 
-    public int getPageLowerBound() {
-        return pageLowerBound;
+    public int getPageStart() {
+        return pageStart;
     }
 
-    public void setPageLowerBound(int pageLowerBound) {
-        this.pageLowerBound = pageLowerBound;
+    public void setPageStart(int pageStart) {
+        this.pageStart = pageStart;
     }
 
-    public int getPageUpperBound() {
-        return pageUpperBound;
+    public int getPageOffset() {
+        return pageOffset;
     }
 
-    public void setPageUpperBound(int pageUpperBound) {
-        this.pageUpperBound = pageUpperBound;
+    public void setPageOffset(int pageOffset) {
+        this.pageOffset = pageOffset;
     }
 }

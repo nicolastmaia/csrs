@@ -3,7 +3,6 @@ package br.ufrrj.labweb.campussocial.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.lang.Nullable;
 
 public class RecommendationRequestData {
@@ -38,10 +37,10 @@ public class RecommendationRequestData {
   private long timestampUpperBound;
 
   @Nullable
-  private int pageLowerBound = 0;
+  private int pageStart = 0;
 
   @Nullable
-  private int pageUpperBound = 10;
+  private int pageOffset = 10;
 
   public List<Long> getInterestList() {
     return interestList;
@@ -138,20 +137,20 @@ public class RecommendationRequestData {
     this.timestampUpperBound = timestampUpperBound;
   }
 
-  public int getPageLowerBound() {
-    return pageLowerBound;
+  public int getPageStart() {
+    return pageStart;
   }
 
-  public void setPageLowerBound(int pageLowerBound) {
-    this.pageLowerBound = pageLowerBound;
+  public void setPageStart(int pageStart) {
+    this.pageStart = pageStart;
   }
 
-  public int getPageUpperBound() {
-    return pageUpperBound;
+  public int getPageOffset() {
+    return pageOffset;
   }
 
-  public void setPageUpperBound(int pageUpperBound) {
-    this.pageUpperBound = pageUpperBound;
+  public void setPageOffset(int pageOffset) {
+    this.pageOffset = pageOffset;
   }
 
 }

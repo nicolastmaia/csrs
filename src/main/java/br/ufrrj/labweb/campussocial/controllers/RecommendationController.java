@@ -40,20 +40,23 @@ public class RecommendationController {
     List<SearchHit<Interest>> interestSearchHits = new ArrayList<SearchHit<Interest>>();
     Boolean limitBiggerThanTotalRegistries = false;
 
+    int pageStart = requestData.getPageStart();
+    int pageEnd = pageStart + requestData.getPageOffset();
+
     // while recommendation list size is smaller than pagination upper limit, keep
     // adding to the list.
-    while (recommendedTopics.size() < requestData.getPageUpperBound() && !limitBiggerThanTotalRegistries) {
+    while (recommendedTopics.size() < requestData.getPageOffset() && !limitBiggerThanTotalRegistries) {
 
       // get topics within square
       List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
           requestData.getTopLeftLon(),
           requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
           requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
-          requestData.getTimestampUpperBound(), requestData.getPageLowerBound(), requestData.getPageUpperBound());
+          requestData.getTimestampUpperBound(), pageStart, pageEnd);
 
       // check if pagination upper limit is bigger than total registries inside these
       // coordinates
-      limitBiggerThanTotalRegistries = topicSearchHits.size() < requestData.getPageUpperBound() ? true : false;
+      limitBiggerThanTotalRegistries = topicSearchHits.size() < requestData.getPageOffset() ? true : false;
 
       // map found topics to list of only post ids
       List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {
@@ -81,8 +84,8 @@ public class RecommendationController {
 
     // if recommended topics list size is bigger than pagination upper limit, get
     // only a sublist
-    if (recommendedTopics.size() > requestData.getPageUpperBound()) {
-      recommendedTopics = recommendedTopics.subList(0, requestData.getPageUpperBound());
+    if (recommendedTopics.size() > requestData.getPageOffset()) {
+      recommendedTopics = recommendedTopics.subList(0, requestData.getPageOffset());
     }
 
     // return recommended topics with the interests that matched the user interests.

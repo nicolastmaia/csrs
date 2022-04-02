@@ -36,11 +36,14 @@ public class TopicController {
     @PostMapping("/within/square")
     List<TopicResultData> getWithinSquare(@RequestBody TopicRequestData requestData) {
 
+        int pageStart = requestData.getPageStart();
+        int pageEnd = pageStart + requestData.getPageOffset();
+
         List<SearchHit<Topic>> searchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
                 requestData.getTopLeftLon(),
                 requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
                 requestData.getCenterLon(), requestData.getUnit(), requestData.gettimestampLowerBound(),
-                requestData.getTimestampUpperBound(), requestData.getPageLowerBound(), requestData.getPageUpperBound());
+                requestData.getTimestampUpperBound(), pageStart, pageEnd);
 
         return topicService.toResultData(searchHits);
     }
