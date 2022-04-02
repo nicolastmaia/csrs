@@ -8,7 +8,7 @@ import org.springframework.lang.Nullable;
 public class RecommendationRequestData {
 
   @Nullable
-  private List<Long> interestList;
+  private List<Long> interestIdList;
 
   @Nullable
   private double centerLat;
@@ -42,19 +42,19 @@ public class RecommendationRequestData {
   @Nullable
   private int pageOffset = 10;
 
-  public List<Long> getInterestList() {
-    return interestList;
+  public List<Long> getInterestIdList() {
+    return interestIdList;
   }
 
-  public void setInterestList(List<Long> interestList) {
-    this.interestList = interestList;
+  public void setInterestIdList(List<Long> interestIdList) {
+    this.interestIdList = interestIdList;
   }
 
-  public void addInterest(Long interest) {
-    if (interestList == null) {
-      interestList = new ArrayList<>();
+  public void addInterestId(Long interestId) {
+    if (interestIdList == null) {
+      interestIdList = new ArrayList<>();
     }
-    interestList.add(interest);
+    interestIdList.add(interestId);
   }
 
   public double getCenterLat() {

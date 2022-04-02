@@ -65,13 +65,13 @@ public class RecommendationController {
       }).collect(Collectors.toList());
 
       // get user's interest list received in request
-      List<Long> interestList = requestData.getInterestList();
+      List<Long> interestIdList = requestData.getInterestIdList();
 
       // get list of interests of found topics and concat with the list of the
       // previous iteration
       interestSearchHits = Stream.concat(interestSearchHits.stream(),
           interestService.getByPostIdListAndInterestIdList(postIdList,
-              interestList).stream())
+              interestIdList).stream())
           .collect(Collectors.toList());
 
       // get recommended topics based on topics found in area and interests of user;
