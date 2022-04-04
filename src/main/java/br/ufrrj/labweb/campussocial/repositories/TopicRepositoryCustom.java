@@ -20,7 +20,7 @@ public interface TopicRepositoryCustom {
     List<SearchHit<Topic>> searchWithin(GeoPoint geoPoint, Double distance, String unit);
 
     List<SearchHit<Topic>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
-            String unit, long timestampLowerBound, long timestampUpperBound, int pageStart, int pageEnd);
+            String unit, long timestampLowerBound, long timestampUpperBound, int pageStart, int offset);
 
     List<SearchHit<Topic>> searchByTitle(String title);
 

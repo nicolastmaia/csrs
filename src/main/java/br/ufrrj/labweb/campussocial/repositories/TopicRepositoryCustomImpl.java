@@ -38,7 +38,7 @@ public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
 
     @Override
     public List<SearchHit<Topic>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
-            String unit, long timestampLowerBound, long timestampUpperBound, int pageStart, int pageEnd) {
+            String unit, long timestampLowerBound, long timestampUpperBound, int pageStart, int offset) {
 
         Query query = new CriteriaQuery(new Criteria("location").boundedBy(geoPoint1, geoPoint2));
 
@@ -50,8 +50,8 @@ public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
         Sort sort = Sort.by(new GeoDistanceOrder("location", centerPoint).withUnit(unit));
 
         // add pageable option
-        if (pageEnd > 0) {
-            Pageable pageable = PageRequest.of(pageStart, pageEnd, sort);
+        if (offset > 0) {
+            Pageable pageable = PageRequest.of(pageStart, offset, sort);
             query.setPageable(pageable);
         } else {
             query.addSort(sort);

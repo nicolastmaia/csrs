@@ -41,18 +41,19 @@ public class RecommendationController {
     Boolean limitBiggerThanTotalRegistries = false;
 
     int pageStart = requestData.getPageStart();
-    int pageEnd = pageStart + requestData.getPageOffset();
 
     // while recommendation list size is smaller than pagination upper limit, keep
     // adding to the list.
     while (recommendedTopics.size() < requestData.getPageOffset() && !limitBiggerThanTotalRegistries) {
+
+      pageStart++;
 
       // get topics within square
       List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
           requestData.getTopLeftLon(),
           requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
           requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
-          requestData.getTimestampUpperBound(), pageStart, pageEnd);
+          requestData.getTimestampUpperBound(), pageStart, requestData.getPageOffset());
 
       // check if pagination upper limit is bigger than total registries inside these
       // coordinates
