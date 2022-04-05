@@ -46,9 +46,6 @@ public class RecommendationController {
     // adding to the list.
     while (recommendedTopics.size() < requestData.getPageOffset() && !limitBiggerThanTotalRegistries) {
 
-      // add +1 to pageStart to avoid getting the same topics again
-      pageStart++;
-
       // get topics within square
       List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
           requestData.getTopLeftLon(),
@@ -82,6 +79,10 @@ public class RecommendationController {
           recommendationService.recommendTopics(topicSearchHits,
               interestSearchHits).stream())
           .collect(Collectors.toList());
+
+      // add +1 to pageStart to avoid getting the same topics again on next iteration
+      pageStart++;
+
     }
 
     // if recommended topics list size is bigger than pagination upper limit, get
