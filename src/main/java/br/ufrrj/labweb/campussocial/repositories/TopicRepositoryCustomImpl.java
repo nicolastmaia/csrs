@@ -25,7 +25,7 @@ public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
     }
 
     @Override
-    public List<SearchHit<Topic>> searchWithin(GeoPoint geoPoint, Double distance, String unit) {
+    public List<SearchHit<Topic>> searchWithinCircle(GeoPoint geoPoint, Double distance, String unit) {
 
         Query query = new CriteriaQuery(new Criteria("location").within(geoPoint, distance.toString() + unit));
 

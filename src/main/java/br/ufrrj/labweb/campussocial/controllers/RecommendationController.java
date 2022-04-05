@@ -33,8 +33,8 @@ public class RecommendationController {
     this.interestService = interestService;
   }
 
-  @RequestMapping("/topics")
-  List<RecommendationResultData> getRecommendedTopics(@RequestBody RecommendationRequestData requestData) {
+  @RequestMapping("/topics/square")
+  List<RecommendationResultData> getRecommendedTopicsWithinSquare(@RequestBody RecommendationRequestData requestData) {
 
     List<SearchHit<Topic>> recommendedTopics = new ArrayList<SearchHit<Topic>>();
     List<SearchHit<Interest>> interestSearchHits = new ArrayList<SearchHit<Interest>>();

@@ -14,7 +14,7 @@ import br.ufrrj.labweb.campussocial.model.TopicResultData;
 import br.ufrrj.labweb.campussocial.services.TopicService;
 
 @RestController
-@RequestMapping("/topicpois")
+@RequestMapping("/topics")
 public class TopicController {
 
     private final TopicService topicService;
@@ -23,17 +23,17 @@ public class TopicController {
         this.topicService = topicService;
     }
 
-    @PostMapping("/within/circle")
-    List<TopicResultData> getWithinDistance(@RequestBody TopicRequestData requestData) {
+    @PostMapping("/circle")
+    List<TopicResultData> getWithinCircle(@RequestBody TopicRequestData requestData) {
 
-        List<SearchHit<Topic>> searchHits = topicService.getWithinDistance(requestData.getCenterLat(),
+        List<SearchHit<Topic>> searchHits = topicService.getWithinCircle(requestData.getCenterLat(),
                 requestData.getCenterLon(),
                 requestData.getDistance(), requestData.getUnit());
 
         return topicService.toResultData(searchHits);
     }
 
-    @PostMapping("/within/square")
+    @PostMapping("/square")
     List<TopicResultData> getWithinSquare(@RequestBody TopicRequestData requestData) {
 
         List<SearchHit<Topic>> searchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),

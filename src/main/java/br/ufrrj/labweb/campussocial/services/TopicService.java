@@ -20,11 +20,11 @@ public class TopicService {
         this.repository = repository;
     }
 
-    public List<SearchHit<Topic>> getWithinDistance(double centerLat, double centerLon, double distance, String unit) {
+    public List<SearchHit<Topic>> getWithinCircle(double centerLat, double centerLon, double distance, String unit) {
 
         GeoPoint location = new GeoPoint(centerLat, centerLon);
 
-        List<SearchHit<Topic>> searchHits = repository.searchWithin(location, distance, unit);
+        List<SearchHit<Topic>> searchHits = repository.searchWithinCircle(location, distance, unit);
 
         return searchHits;
     }

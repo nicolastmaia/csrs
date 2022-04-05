@@ -17,7 +17,7 @@ public interface TopicRepositoryCustom {
      * @param unit     the distance unit
      * @return the found entities
      */
-    List<SearchHit<Topic>> searchWithin(GeoPoint geoPoint, Double distance, String unit);
+    List<SearchHit<Topic>> searchWithinCircle(GeoPoint geoPoint, Double distance, String unit);
 
     List<SearchHit<Topic>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
             String unit, long timestampLowerBound, long timestampUpperBound, int pageStart, int offset);

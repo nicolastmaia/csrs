@@ -14,7 +14,7 @@ import br.ufrrj.labweb.campussocial.model.InterestResultData;
 import br.ufrrj.labweb.campussocial.services.InterestService;
 
 @RestController
-@RequestMapping("/interestpois")
+@RequestMapping("/interests")
 public class InterestController {
 
     private final InterestService interestService;
