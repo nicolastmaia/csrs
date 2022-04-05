@@ -46,6 +46,7 @@ public class RecommendationController {
     // adding to the list.
     while (recommendedTopics.size() < requestData.getPageOffset() && !limitBiggerThanTotalRegistries) {
 
+      // add +1 to pageStart to avoid getting the same topics again
       pageStart++;
 
       // get topics within square
