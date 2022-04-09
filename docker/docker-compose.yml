@@ -9,7 +9,7 @@ services:
           cpus: "0.15"
           memory: 1024M
     container_name: cspostgres
-    restart: always
+    # restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -30,7 +30,7 @@ services:
           cpus: "0.30"
           memory: 3072M
     container_name: cslogstash
-    restart: always
+    # restart: always
     environment:
       MONITORING_ENABLED: "true"
     volumes:
@@ -53,7 +53,7 @@ services:
           cpus: "0.30"
           memory: 3072M
     container_name: cselastic
-    restart: always
+    # restart: always
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
@@ -72,7 +72,7 @@ services:
           cpus: "0.15"
           memory: 2048M
     container_name: cskibana
-    restart: always
+    # restart: always
     environment:
       SERVER_NAME: kibana
       ELASTICSEARCH_HOSTS: http://cselastic:9200
