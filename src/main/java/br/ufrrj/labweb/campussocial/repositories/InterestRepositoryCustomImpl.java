@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import br.ufrrj.labweb.campussocial.model.Interest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class InterestRepositoryCustomImpl implements InterestRepositoryCustom {
@@ -49,10 +50,26 @@ public class InterestRepositoryCustomImpl implements InterestRepositoryCustom {
     @Override
     public List<SearchHit<Interest>> searchByPostIdListAndInterestIdList(List<Long> postIdList,
             List<Long> interestIdList) {
-        Criteria criteria = new Criteria("post_id").in(postIdList).and("interest_id").in(interestIdList);
-        Query query = new CriteriaQuery(criteria);
 
-        return operations.search(query, Interest.class).getSearchHits();
+        // fetch all interests with the given post ids and given interest ids
+        Criteria criteria1 = new Criteria("post_id").in(postIdList).and("interest_id").in(interestIdList);
+        Query query1 = new CriteriaQuery(criteria1);
+        List<SearchHit<Interest>> queryResult1 = operations.search(query1, Interest.class).getSearchHits();
+
+        // filter only the ids of the posts from previous query
+        List<Long> filterPostIdList = queryResult1.stream().map(searchHit -> {
+            Interest interest = searchHit.getContent();
+            return interest.getPost_id();
+        }).collect(Collectors.toList());
+
+        // fetch all interests of the posts which we already know have the desired
+        // interests
+        Criteria criteria2 = new Criteria("post_id").in(filterPostIdList);
+        Query query2 = new CriteriaQuery(criteria2);
+        List<SearchHit<Interest>> queryResult2 = operations.search(query2, Interest.class).getSearchHits();
+
+        return queryResult2;
+
     }
 
 }

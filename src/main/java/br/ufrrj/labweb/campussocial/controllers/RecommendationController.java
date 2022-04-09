@@ -38,13 +38,13 @@ public class RecommendationController {
 
     List<SearchHit<Topic>> recommendedTopics = new ArrayList<SearchHit<Topic>>();
     List<SearchHit<Interest>> interestSearchHits = new ArrayList<SearchHit<Interest>>();
-    Boolean limitBiggerThanTotalRegistries = false;
+    Boolean isOffsetBiggerThanTotalRegistries = false;
 
     int pageStart = requestData.getPageStart();
 
     // while recommendation list size is smaller than pagination upper limit, keep
     // adding to the list.
-    while (recommendedTopics.size() < requestData.getPageOffset() && !limitBiggerThanTotalRegistries) {
+    while (recommendedTopics.size() < requestData.getPageOffset() && !isOffsetBiggerThanTotalRegistries) {
 
       // get topics within square
       List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
@@ -55,7 +55,7 @@ public class RecommendationController {
 
       // check if pagination upper limit is bigger than total registries inside these
       // coordinates
-      limitBiggerThanTotalRegistries = topicSearchHits.size() < requestData.getPageOffset() ? true : false;
+      isOffsetBiggerThanTotalRegistries = topicSearchHits.size() < requestData.getPageOffset() ? true : false;
 
       // map found topics to list of only post ids
       List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {
