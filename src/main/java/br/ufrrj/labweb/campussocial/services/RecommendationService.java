@@ -2,30 +2,25 @@ package br.ufrrj.labweb.campussocial.services;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.stereotype.Service;
 
-import br.ufrrj.labweb.campussocial.model.Interest;
 import br.ufrrj.labweb.campussocial.model.RecommendationResultData;
 import br.ufrrj.labweb.campussocial.model.Topic;
 
 @Service
 public class RecommendationService {
 
-  public RecommendationService() {
-  }
-
   public List<SearchHit<Topic>> recommendTopics(List<SearchHit<Topic>> topicSearchHits,
-      List<SearchHit<Interest>> interestSearchHits) {
+      List<Map<String, Object>> interestRows) {
 
-    List<Long> topicsInterestsPostIds = interestSearchHits.stream().map(searchHit -> {
-      Interest interestPOI = searchHit.getContent();
-
-      return interestPOI.getPost_id();
-    }).collect(Collectors.toList());
+    List<Long> topicsInterestsPostIds = interestRows.stream()
+        .map(row -> (Long) row.get("post_id"))
+        .collect(Collectors.toList());
 
     Set<Long> topicsInterestsPostIdsSet = new HashSet<>(topicsInterestsPostIds);
 
@@ -39,12 +34,11 @@ public class RecommendationService {
   }
 
   public List<RecommendationResultData> toResultData(List<SearchHit<Topic>> recommendedTopics,
-      List<SearchHit<Interest>> interestSearchHits) {
+      List<Map<String, Object>> interestRows) {
     List<RecommendationResultData> recommendation = recommendedTopics.stream().map(topic -> {
 
-      List<Interest> topicInterestList = interestSearchHits.stream().filter(topicInterest -> {
-        return topicInterest.getContent().getPost_id() == topic.getContent().getId();
-      }).map(topicInterest -> topicInterest.getContent()).collect(Collectors.toList());
+      List<Map<String, Object>> topicInterestList = interestRows.stream()
+          .filter(row -> (Long) row.get("post_id") == topic.getContent().getId()).collect(Collectors.toList());
 
       Topic topicPOI = topic.getContent();
 

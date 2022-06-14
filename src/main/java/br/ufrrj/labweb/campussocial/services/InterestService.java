@@ -1,49 +1,34 @@
 package br.ufrrj.labweb.campussocial.services;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
-import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
-import br.ufrrj.labweb.campussocial.model.InterestResultData;
-import br.ufrrj.labweb.campussocial.model.Interest;
-import br.ufrrj.labweb.campussocial.repositories.InterestRepository;
 
 @Service
 public class InterestService {
 
-  private final InterestRepository repository;
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
-  public InterestService(InterestRepository repository) {
-    this.repository = repository;
-  }
-
-  public List<SearchHit<Interest>> getByNameList(List<String> interestNameList) {
-    List<SearchHit<Interest>> searchHits = repository.searchByNameList(interestNameList);
-
-    return searchHits;
-  }
-
-  public List<SearchHit<Interest>> getByPostIdList(List<Long> postIdList) {
-    List<SearchHit<Interest>> searchHits = repository.searchByPostIdList(postIdList);
-
-    return searchHits;
-  }
-
-  public List<SearchHit<Interest>> getByPostIdListAndInterestIdList(List<Long> postIdList,
+  public List<Map<String, Object>> getByPostIdListAndInterestIdList(List<Long> postIdList,
       List<Long> interestIdList) {
-    List<SearchHit<Interest>> searchHits = repository.searchByPostIdListAndInterestIdList(postIdList, interestIdList);
 
-    return searchHits;
-  }
+    String interestIdListAsString = interestIdList.toString().replace("[", "(").replace("]",
+        ")");
+    String postIdListAsString = postIdList.toString().replace("[", "(").replace("]", ")");
 
-  public List<InterestResultData> toResultData(List<SearchHit<Interest>> searchHits) {
-    return searchHits.stream().map(searchHit -> {
-      Interest interestPOI = searchHit.getContent();
-      return new InterestResultData(interestPOI.getId(), interestPOI.getPost_id(), interestPOI.getInterest_id(),
-          interestPOI.getInterest_name());
-    }).collect(Collectors.toList());
+    // get list of interests of found topics and concat with the list of the
+    // previous iteration
+    String interestSql = "SELECT * FROM interestpost WHERE interest_id IN "
+        + String.join(",",
+            interestIdListAsString)
+        + " AND post_id IN "
+        + String.join(",", postIdListAsString);
+
+    return jdbcTemplate.queryForList(interestSql);
   }
 
 }

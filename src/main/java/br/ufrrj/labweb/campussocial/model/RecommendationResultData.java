@@ -1,14 +1,15 @@
 package br.ufrrj.labweb.campussocial.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class RecommendationResultData {
 
   Topic topic;
 
-  List<Interest> interestList;
+  List<Map<String, Object>> interestList;
 
-  public RecommendationResultData(Topic topic, List<Interest> interestList) {
+  public RecommendationResultData(Topic topic, List<Map<String, Object>> interestList) {
     this.topic = topic;
     this.interestList = interestList;
   }
@@ -21,11 +22,11 @@ public class RecommendationResultData {
     this.topic = topic;
   }
 
-  public List<Interest> getInterestList() {
+  public List<Map<String, Object>> getInterestList() {
     return interestList;
   }
 
-  public void setInterestList(List<Interest> interestList) {
+  public void setInterestList(List<Map<String, Object>> interestList) {
     this.interestList = interestList;
   }
 
