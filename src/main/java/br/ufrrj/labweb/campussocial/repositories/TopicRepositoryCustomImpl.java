@@ -1,5 +1,6 @@
 package br.ufrrj.labweb.campussocial.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,14 +16,10 @@ import br.ufrrj.labweb.campussocial.model.Topic;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
 public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
 
-    private final ElasticsearchOperations operations;
-
-    public TopicRepositoryCustomImpl(ElasticsearchOperations operations) {
-        this.operations = operations;
-    }
+    @Autowired
+    private ElasticsearchOperations operations;
 
     @Override
     public List<SearchHit<Topic>> searchWithinCircle(GeoPoint geoPoint, Double distance, String unit) {

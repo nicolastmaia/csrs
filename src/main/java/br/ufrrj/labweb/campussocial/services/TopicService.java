@@ -3,6 +3,7 @@ package br.ufrrj.labweb.campussocial.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,8 @@ import br.ufrrj.labweb.campussocial.repositories.TopicRepository;
 @Service
 public class TopicService {
 
-    private final TopicRepository repository;
-
-    public TopicService(TopicRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private TopicRepository repository;
 
     public List<SearchHit<Topic>> getWithinCircle(double centerLat, double centerLon, double distance, String unit) {
 

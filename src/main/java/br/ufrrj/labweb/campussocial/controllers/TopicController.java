@@ -2,6 +2,7 @@ package br.ufrrj.labweb.campussocial.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,11 +18,8 @@ import br.ufrrj.labweb.campussocial.services.TopicService;
 @RequestMapping("/topics")
 public class TopicController {
 
-    private final TopicService topicService;
-
-    public TopicController(TopicService topicService) {
-        this.topicService = topicService;
-    }
+    @Autowired
+    private TopicService topicService;
 
     @PostMapping("/circle")
     List<TopicResultData> getWithinCircle(@RequestBody TopicRequestData requestData) {
