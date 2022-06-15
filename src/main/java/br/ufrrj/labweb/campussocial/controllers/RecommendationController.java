@@ -37,13 +37,13 @@ public class RecommendationController {
     List<Map<String, Object>> interestRows = new ArrayList<Map<String, Object>>();
 
     Boolean isOffsetBiggerThanTotalRegistries = false;
-
+    Boolean topicSearchHitsIsEmpty = false;
     int pageStart = requestData.getPageStart();
 
     // while recommendation list size is smaller than pagination upper limit, keep
     // adding to the list.
     while (recommendedTopics.size() < requestData.getPageOffset() &&
-        !isOffsetBiggerThanTotalRegistries) {
+        !isOffsetBiggerThanTotalRegistries && !topicSearchHitsIsEmpty) {
 
       // get topics within square
       List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
@@ -55,28 +55,31 @@ public class RecommendationController {
       // check if pagination upper limit is bigger than total registries inside these
       // coordinates
       isOffsetBiggerThanTotalRegistries = topicSearchHits.size() < requestData.getPageOffset() ? true : false;
+      topicSearchHitsIsEmpty = topicSearchHits.isEmpty();
 
-      // map found topics to list of only post ids
-      List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {
-        Topic topicPOI = searchHit.getContent();
-        return topicPOI.getId();
-      }).collect(Collectors.toList());
+      if (!topicSearchHitsIsEmpty) {
+        // map found topics to list of only post ids
+        List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {
+          Topic topicPOI = searchHit.getContent();
+          return topicPOI.getId();
+        }).collect(Collectors.toList());
 
-      // get user's interest list received in request
-      List<Long> interestIdList = requestData.getInterestIdList();
-      interestRows = Stream.concat(interestRows.stream(),
-          interestService.getByPostIdListAndInterestIdList(postIdList, interestIdList).stream())
-          .collect(Collectors.toList());
+        // get user's interest list received in request
+        List<Long> interestIdList = requestData.getInterestIdList();
+        interestRows = Stream.concat(interestRows.stream(),
+            interestService.getByPostIdListAndInterestIdList(postIdList, interestIdList).stream())
+            .collect(Collectors.toList());
 
-      // get recommended topics based on topics found in area and interests of user;
-      // concat with the list of the previous iteration
-      recommendedTopics = Stream.concat(recommendedTopics.stream(),
-          recommendationService.recommendTopics(topicSearchHits,
-              interestRows).stream())
-          .collect(Collectors.toList());
+        // get recommended topics based on topics found in area and interests of user;
+        // concat with the list of the previous iteration
+        recommendedTopics = Stream.concat(recommendedTopics.stream(),
+            recommendationService.recommendTopics(topicSearchHits,
+                interestRows).stream())
+            .collect(Collectors.toList());
 
-      // add +1 to pageStart to avoid getting the same topics again on next iteration
-      pageStart++;
+        // add +1 to pageStart to avoid getting the same topics again on next iteration
+        pageStart++;
+      }
     }
 
     // if recommended topics list size is bigger than pagination upper limit, get
