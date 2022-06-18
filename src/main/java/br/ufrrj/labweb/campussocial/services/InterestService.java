@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import br.ufrrj.labweb.campussocial.repositories.InterestRepository;
+
 @Service
 public class InterestService {
 
   @Autowired
-  private JdbcTemplate jdbcTemplate;
+  private InterestRepository interestRepository;
 
   public List<Map<String, Object>> getByPostIdListAndInterestIdList(List<Long> postIdList,
       List<Long> interestIdList) {
@@ -20,15 +22,7 @@ public class InterestService {
         ")");
     String postIdListAsString = postIdList.toString().replace("[", "(").replace("]", ")");
 
-    // get list of interests of found topics and concat with the list of the
-    // previous iteration
-    String interestSql = "SELECT * FROM interestpost WHERE interest_id IN "
-        + String.join(",",
-            interestIdListAsString)
-        + " AND post_id IN "
-        + String.join(",", postIdListAsString);
-
-    return jdbcTemplate.queryForList(interestSql);
+    return interestRepository.getByPostIdListAndInterestIdList(postIdListAsString, interestIdListAsString);
   }
 
 }
