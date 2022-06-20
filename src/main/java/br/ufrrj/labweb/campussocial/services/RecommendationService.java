@@ -2,7 +2,6 @@ package br.ufrrj.labweb.campussocial.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,26 +31,30 @@ public class RecommendationService {
   public List<RecommendationResultData> recommendedTopicsWithinSquare(
       RecommendationRequestData requestData) {
 
+    // initialize lists to use
     List<Map<String, Object>> interestRows = new ArrayList<Map<String, Object>>();
-    Map<Boolean, List<SearchHit<Topic>>> separatedTopics = new HashMap<Boolean, List<SearchHit<Topic>>>();
+    Map<Boolean, List<SearchHit<Topic>>> groupedTopics = new HashMap<Boolean, List<SearchHit<Topic>>>();
     List<SearchHit<Topic>> muiTopics = new ArrayList<SearchHit<Topic>>();
     List<SearchHit<Topic>> nmuiTopics = new ArrayList<SearchHit<Topic>>();
     List<SearchHit<Topic>> tempList = new ArrayList<SearchHit<Topic>>();
     List<SearchHit<Topic>> recommendedTopics = new ArrayList<SearchHit<Topic>>();
 
+    // initialize flags needed for do-while loop
+    Boolean isOffsetSmallerThanTotalRegistries = true;
+    Boolean isNotEnoughTopics = true;
+
+    // initialize amounts of topics to use
     int totalAmount = (int) (requestData.getPageOffset() * EXTRA_TOTAL_PERCENT);
     int muiAmount = (int) (requestData.getPageOffset() * MUI_PERCENT);
     int nmuiAmount = (int) (requestData.getPageOffset() * NMUI_PERCENT);
 
+    // get page start to search for topics
     int page = requestData.getPageStart();
 
     // get user's interest list received in request
     List<Long> interestIdList = requestData.getInterestIdList();
 
-    Boolean isOffsetBiggerThanTotalRegistries = false;
-
-    // while recommendation list size is smaller than pagination upper limit, keep
-    // adding to the list.
+    // while criteria is met, continue to search for topics
     do {
       // get topics within square
       List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
@@ -61,6 +64,7 @@ public class RecommendationService {
           requestData.getTimestampUpperBound(), page, totalAmount);
 
       if (!topicSearchHits.isEmpty()) {
+
         // map found topics to list of only post ids
         List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {
           Topic topicPOI = searchHit.getContent();
@@ -72,29 +76,33 @@ public class RecommendationService {
             interestService.getByPostIdListAndInterestIdList(postIdList, interestIdList).stream())
             .collect(Collectors.toList());
 
-        // concat with the list of the previous iteration
-        separatedTopics = separateMUIandNMUI(topicSearchHits,
+        // group found topics by whether they have user's interests associated (MUI) or
+        // not (NMUI)
+        groupedTopics = groupMUIandNMUI(topicSearchHits,
             interestRows);
 
-        tempList = separatedTopics.get(true);
+        tempList = groupedTopics.get(true);
         muiTopics = Stream.concat(muiTopics.stream(), tempList.stream()).collect(Collectors.toList());
 
-        tempList = separatedTopics.get(false);
+        tempList = groupedTopics.get(false);
         nmuiTopics = Stream.concat(nmuiTopics.stream(), tempList.stream()).collect(Collectors.toList());
 
-        // add +1 to pageStart to avoid getting the same topics again on next iteration
+        // add +1 to page to avoid getting the same topics again on next iteration
         page++;
       }
 
       // check if pagination upper limit is bigger than total registries inside these
       // coordinates
-      isOffsetBiggerThanTotalRegistries = topicSearchHits.size() < requestData.getPageOffset() ? true : false;
+      isOffsetSmallerThanTotalRegistries = requestData.getPageOffset() < topicSearchHits.size() ? true : false;
 
-    } while ((muiTopics.size() < muiAmount || nmuiTopics.size() < nmuiAmount) &&
-        !isOffsetBiggerThanTotalRegistries && !interestIdList.isEmpty());
+      // check if there are enough MUI and NMUI topics to recommend
+      isNotEnoughTopics = muiTopics.size() < muiAmount || nmuiTopics.size() < nmuiAmount;
 
-    // if recommended topics list size is bigger than pagination upper limit, get
-    // only a sublist of it
+    } while (isNotEnoughTopics &&
+        isOffsetSmallerThanTotalRegistries && !interestIdList.isEmpty());
+
+    // if MUI and NMUI topics lists are bigger than respective amounts, get
+    // only a sublist of them
     if (muiTopics.size() > muiAmount) {
       muiTopics = muiTopics.subList(0, muiAmount);
     }
@@ -102,6 +110,7 @@ public class RecommendationService {
       nmuiTopics = nmuiTopics.subList(0, nmuiAmount);
     }
 
+    // concat MUI and NMUI topics lists
     recommendedTopics = Stream.concat(recommendedTopics.stream(), muiTopics.stream()).collect(Collectors.toList());
     recommendedTopics = Stream.concat(recommendedTopics.stream(), nmuiTopics.stream()).collect(Collectors.toList());
 
@@ -110,24 +119,27 @@ public class RecommendationService {
 
   }
 
-  public Map<Boolean, List<SearchHit<Topic>>> separateMUIandNMUI(List<SearchHit<Topic>> topicSearchHits,
+  public Map<Boolean, List<SearchHit<Topic>>> groupMUIandNMUI(List<SearchHit<Topic>> topicSearchHits,
       List<Map<String, Object>> interestRows) {
 
-    Map<Boolean, List<SearchHit<Topic>>> separatedTopics = new HashMap<Boolean, List<SearchHit<Topic>>>();
+    Map<Boolean, List<SearchHit<Topic>>> groupedTopics = new HashMap<Boolean, List<SearchHit<Topic>>>();
+
+    // get only post_id column of each interest and remove duplicates
     Set<Long> topicsInterestsPostIds = interestRows.stream()
         .map(row -> (Long) row.get("post_id"))
         .collect(Collectors.toSet());
 
-    // WAY TO SEPARATE INTO TWO GROUPS: MUI and NMUI
-    separatedTopics = topicSearchHits.stream()
+    // separate topics into MUI and NMUI
+    groupedTopics = topicSearchHits.stream()
         .collect(Collectors.groupingBy(hit -> {
           return topicsInterestsPostIds.contains(hit.getContent().getId());
         }));
 
-    separatedTopics.computeIfAbsent(false, value -> new ArrayList<SearchHit<Topic>>());
-    separatedTopics.computeIfAbsent(true, value -> new ArrayList<SearchHit<Topic>>());
+    // foolproof check to make sure that MUI and NMUI lists exist
+    groupedTopics.computeIfAbsent(false, value -> new ArrayList<SearchHit<Topic>>());
+    groupedTopics.computeIfAbsent(true, value -> new ArrayList<SearchHit<Topic>>());
 
-    return separatedTopics;
+    return groupedTopics;
   }
 
   public List<RecommendationResultData> toResultData(List<SearchHit<Topic>> recommendedTopics,
