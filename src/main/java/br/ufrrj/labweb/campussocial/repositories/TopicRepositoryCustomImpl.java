@@ -1,76 +1,62 @@
 package br.ufrrj.labweb.campussocial.repositories;
 
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.common.geo.GeoPoint;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.geo.GeoPoint;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
-import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
-import org.springframework.data.elasticsearch.core.query.Query;
 
-import br.ufrrj.labweb.campussocial.model.Topic;
-
-import java.util.List;
+import java.io.IOException;
 
 public class TopicRepositoryCustomImpl implements TopicRepositoryCustom {
 
-    @Autowired
-    private ElasticsearchOperations operations;
+    private RestHighLevelClient client;
 
-    @Override
-    public List<SearchHit<Topic>> searchWithinCircle(GeoPoint geoPoint, Double distance, String unit) {
-
-        Query query = new CriteriaQuery(new Criteria("location").within(geoPoint, distance.toString() + unit));
-
-        // add a sort to get the actual distance back in the sort value
-        Sort sort = Sort.by(new GeoDistanceOrder("location", geoPoint).withUnit(unit));
-        query.addSort(sort);
-
-        return operations.search(query, Topic.class).getSearchHits();
+    TopicRepositoryCustomImpl() {
+        ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo("localhost:9200").build();
+        client = RestClients.create(clientConfiguration).rest();
     }
 
     @Override
-    public List<SearchHit<Topic>> searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
-            String unit, long timestampLowerBound, long timestampUpperBound, int pageStart, int offset) {
+    public SearchHits searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
+            String unit, long timestampLowerBound, long timestampUpperBound, int offset,
+            double searchAfter) throws IOException {
 
-        Query query = new CriteriaQuery(new Criteria("location").boundedBy(geoPoint1, geoPoint2));
+        SearchRequest searchRequest = new SearchRequest("topic-post");
+
+        QueryBuilder query = QueryBuilders.boolQuery()
+                .must(QueryBuilders.geoBoundingBoxQuery("location").setCorners(geoPoint1, geoPoint2));
 
         if (timestampLowerBound > 0 && timestampUpperBound > 0) {
-            addTimestampLimit(query, timestampLowerBound, timestampUpperBound);
+            ((BoolQueryBuilder) query)
+                    .must(QueryBuilders.rangeQuery("timestamp").gte(timestampLowerBound).lte(timestampUpperBound));
+
         }
 
-        // add a sort to get the actual distance back in the sort value
-        Sort sort = Sort.by(new GeoDistanceOrder("location", centerPoint).withUnit(unit));
+        SortBuilder sort = SortBuilders.geoDistanceSort("location", centerPoint).unit(DistanceUnit.KILOMETERS)
+                .order(SortOrder.ASC);
 
-        // add pageable option
-        if (offset > 0) {
-            Pageable pageable = PageRequest.of(pageStart, offset, sort);
-            query.setPageable(pageable);
-        } else {
-            query.addSort(sort);
-        }
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().query(query)
+                .sort(sort)
+                .searchAfter(new Double[] { searchAfter })
+                .size(offset);
 
-        return operations.search(query, Topic.class).getSearchHits();
-    }
+        searchRequest.source(searchSourceBuilder);
 
-    @Override
-    public List<SearchHit<Topic>> searchByTitle(String title) {
-        String[] splitTitle = title.split(" ");
-        Criteria criteria = new Criteria("title").contains(splitTitle[0]).or(new Criteria("title").expression(title));
-        Query query = new CriteriaQuery(criteria);
-
-        return operations.search(query, Topic.class).getSearchHits();
-    }
-
-    private Query addTimestampLimit(Query query, long timestampLowerBound, long timestampUpperBound) {
-        Criteria timestampCriteria = new Criteria("modified_at").between(timestampLowerBound, timestampUpperBound);
-
-        ((CriteriaQuery) query).addCriteria(timestampCriteria);
-
-        return query;
+        SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
+        return response.getHits();
     }
 }

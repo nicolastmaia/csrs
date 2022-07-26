@@ -5,20 +5,24 @@ import java.util.Map;
 
 public class RecommendationResultData {
 
-  Topic topic;
+  Map<String, Object> topic;
 
   List<Map<String, Object>> interestList;
 
-  public RecommendationResultData(Topic topic, List<Map<String, Object>> interestList) {
+  private Double searchAfter;
+
+  public RecommendationResultData(Map<String, Object> topic, List<Map<String, Object>> interestList,
+      Double searchAfter) {
     this.topic = topic;
     this.interestList = interestList;
+    this.searchAfter = searchAfter;
   }
 
-  public Topic getTopic() {
+  public Map<String, Object> getTopic() {
     return topic;
   }
 
-  public void setTopic(Topic topic) {
+  public void setTopic(Map<String, Object> topic) {
     this.topic = topic;
   }
 
@@ -28,6 +32,14 @@ public class RecommendationResultData {
 
   public void setInterestList(List<Map<String, Object>> interestList) {
     this.interestList = interestList;
+  }
+
+  public Double getSearchAfter() {
+    return searchAfter;
+  }
+
+  public void setSearchAfter(Double searchAfter) {
+    this.searchAfter = searchAfter;
   }
 
 }

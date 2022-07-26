@@ -1,5 +1,6 @@
 package br.ufrrj.labweb.campussocial.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ public class RecommendationController {
   private RecommendationService recommendationService;
 
   @RequestMapping("/topics/square")
-  List<RecommendationResultData> recommendedTopicsWithinSquare(@RequestBody RecommendationRequestData requestData) {
+  List<RecommendationResultData> recommendedTopicsWithinSquare(@RequestBody RecommendationRequestData requestData)
+      throws IOException {
 
     return recommendationService.recommendedTopicsWithinSquare(requestData);
 

@@ -1,6 +1,8 @@
 package br.ufrrj.labweb.campussocial.services;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,13 +10,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.stereotype.Service;
 
 import br.ufrrj.labweb.campussocial.model.RecommendationRequestData;
 import br.ufrrj.labweb.campussocial.model.RecommendationResultData;
-import br.ufrrj.labweb.campussocial.model.Topic;
 
 @Service
 public class RecommendationService {
@@ -29,47 +31,49 @@ public class RecommendationService {
   private static final double EXTRA_TOTAL_PERCENT = 1.2;
 
   public List<RecommendationResultData> recommendedTopicsWithinSquare(
-      RecommendationRequestData requestData) {
+      RecommendationRequestData requestData) throws IOException {
 
     // initialize lists to use
     List<Map<String, Object>> interestRows = new ArrayList<Map<String, Object>>();
-    Map<Boolean, List<SearchHit<Topic>>> groupedTopics = new HashMap<Boolean, List<SearchHit<Topic>>>();
-    List<SearchHit<Topic>> muiTopics = new ArrayList<SearchHit<Topic>>();
-    List<SearchHit<Topic>> nmuiTopics = new ArrayList<SearchHit<Topic>>();
-    List<SearchHit<Topic>> tempList = new ArrayList<SearchHit<Topic>>();
-    List<SearchHit<Topic>> recommendedTopics = new ArrayList<SearchHit<Topic>>();
+    Map<Boolean, List<SearchHit>> groupedTopics = new HashMap<Boolean, List<SearchHit>>();
+    List<SearchHit> muiTopics = new ArrayList<SearchHit>();
+    List<SearchHit> nmuiTopics = new ArrayList<SearchHit>();
+    List<SearchHit> tempList = new ArrayList<SearchHit>();
+    List<SearchHit> recommendedTopics = new ArrayList<SearchHit>();
 
     // initialize flags needed for do-while loop
-    Boolean isOffsetSmallerThanTotalRegistries = true;
-    Boolean isNotEnoughTopics = true;
+    Boolean isOffsetBiggerThanTotalRegistries = false;
+    Boolean isEnoughTopics = false;
 
     // initialize amounts of topics to use
     int totalAmount = (int) (requestData.getPageOffset() * EXTRA_TOTAL_PERCENT);
     int muiAmount = (int) (requestData.getPageOffset() * MUI_PERCENT);
     int nmuiAmount = (int) (requestData.getPageOffset() * NMUI_PERCENT);
 
-    // get page start to search for topics
-    int page = requestData.getPageStart();
-
     // get user's interest list received in request
     List<Long> interestIdList = requestData.getInterestIdList();
+
+    double searchAfter = requestData.getSearchAfter();
 
     // while criteria is met, continue to search for topics
     do {
       // get topics within square
-      List<SearchHit<Topic>> topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
+      SearchHits topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
           requestData.getTopLeftLon(),
           requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
           requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
-          requestData.getTimestampUpperBound(), page, totalAmount);
+          requestData.getTimestampUpperBound(), totalAmount, searchAfter);
 
-      if (!topicSearchHits.isEmpty()) {
+      SearchHit[] topics = topicSearchHits.getHits();
+
+      if (topics.length > 0) {
 
         // map found topics to list of only post ids
-        List<Long> postIdList = topicSearchHits.stream().map(searchHit -> {
-          Topic topicPOI = searchHit.getContent();
-          return topicPOI.getId();
-        }).collect(Collectors.toList());
+        List<Long> postIdList = new ArrayList<Long>();
+        for (SearchHit searchHit : topics) {
+          Long id = Long.parseLong(searchHit.getSourceAsMap().get("id_post").toString());
+          postIdList.add(id);
+        }
 
         // get post ids that have user's interests associated
         interestRows = Stream.concat(interestRows.stream(),
@@ -78,7 +82,7 @@ public class RecommendationService {
 
         // group found topics by whether they have user's interests associated (MUI) or
         // not (NMUI)
-        groupedTopics = groupMUIandNMUI(topicSearchHits,
+        groupedTopics = groupMUIandNMUI(topics,
             interestRows);
 
         tempList = groupedTopics.get(true);
@@ -87,19 +91,20 @@ public class RecommendationService {
         tempList = groupedTopics.get(false);
         nmuiTopics = Stream.concat(nmuiTopics.stream(), tempList.stream()).collect(Collectors.toList());
 
-        // add +1 to page to avoid getting the same topics again on next iteration
-        page++;
+        searchAfter = Double
+            .parseDouble(topics[topics.length - 1].getSortValues()[0].toString());
       }
 
       // check if pagination upper limit is bigger than total registries inside these
       // coordinates
-      isOffsetSmallerThanTotalRegistries = requestData.getPageOffset() < topicSearchHits.size() ? true : false;
+      isOffsetBiggerThanTotalRegistries = requestData.getPageOffset() > topics.length - 1 ? true
+          : false;
 
       // check if there are enough MUI and NMUI topics to recommend
-      isNotEnoughTopics = muiTopics.size() < muiAmount || nmuiTopics.size() < nmuiAmount;
+      isEnoughTopics = muiTopics.size() >= muiAmount && nmuiTopics.size() >= nmuiAmount;
 
-    } while (isNotEnoughTopics &&
-        isOffsetSmallerThanTotalRegistries && !interestIdList.isEmpty());
+    } while (!isEnoughTopics &&
+        !isOffsetBiggerThanTotalRegistries && !interestIdList.isEmpty());
 
     // if MUI and NMUI topics lists are bigger than respective amounts, get
     // only a sublist of them
@@ -119,43 +124,56 @@ public class RecommendationService {
 
   }
 
-  public Map<Boolean, List<SearchHit<Topic>>> groupMUIandNMUI(List<SearchHit<Topic>> topicSearchHits,
+  public Map<Boolean, List<SearchHit>> groupMUIandNMUI(SearchHit[] topics,
       List<Map<String, Object>> interestRows) {
 
-    Map<Boolean, List<SearchHit<Topic>>> groupedTopics = new HashMap<Boolean, List<SearchHit<Topic>>>();
+    final Map<Boolean, List<SearchHit>> groupedTopics = new HashMap<Boolean, List<SearchHit>>();
+
+    // foolproof check to make sure that MUI and NMUI lists exist
+    groupedTopics.computeIfAbsent(false, value -> new ArrayList<SearchHit>());
+    groupedTopics.computeIfAbsent(true, value -> new ArrayList<SearchHit>());
 
     // get only post_id column of each interest and remove duplicates
     Set<Long> topicsInterestsPostIds = interestRows.stream()
         .map(row -> (Long) row.get("post_id"))
         .collect(Collectors.toSet());
 
-    // separate topics into MUI and NMUI
-    groupedTopics = topicSearchHits.stream()
-        .collect(Collectors.groupingBy(hit -> {
-          return topicsInterestsPostIds.contains(hit.getContent().getId());
-        }));
-
-    // foolproof check to make sure that MUI and NMUI lists exist
-    groupedTopics.computeIfAbsent(false, value -> new ArrayList<SearchHit<Topic>>());
-    groupedTopics.computeIfAbsent(true, value -> new ArrayList<SearchHit<Topic>>());
+    Arrays.asList(topics).forEach(hit -> {
+      Long id = Long.parseLong(hit.getSourceAsMap().get("id_post").toString());
+      if (topicsInterestsPostIds.contains(id)) {
+        List<SearchHit> tempList = groupedTopics.get(true);
+        tempList.add(hit);
+        groupedTopics.put(true, tempList);
+      } else {
+        List<SearchHit> tempList = groupedTopics.get(false);
+        tempList.add(hit);
+        groupedTopics.put(false, tempList);
+      }
+    });
 
     return groupedTopics;
   }
 
-  public List<RecommendationResultData> toResultData(List<SearchHit<Topic>> recommendedTopics,
+  public List<RecommendationResultData> toResultData(List<SearchHit> recommendedTopics,
       List<Map<String, Object>> interestRows) {
-    List<RecommendationResultData> recommendation = recommendedTopics.stream().map(topic -> {
+    List<RecommendationResultData> recommendationList = new ArrayList<RecommendationResultData>();
 
+    recommendedTopics.forEach(hit -> {
       List<Map<String, Object>> topicInterestList = interestRows.stream()
-          .filter(row -> (Long) row.get("post_id") == topic.getContent().getId()).collect(Collectors.toList());
+          .filter(row -> (Long) row.get("post_id") == Long
+              .parseLong(hit.getSourceAsMap().get("id_post").toString()))
+          .collect(Collectors.toList());
 
-      Topic topicPOI = topic.getContent();
+      Double searchAfter = Double.parseDouble(hit.getSortValues()[0].toString());
 
-      return new RecommendationResultData(topicPOI, topicInterestList);
+      RecommendationResultData tmpResultData = new RecommendationResultData(hit.getSourceAsMap(), topicInterestList,
+          searchAfter);
 
-    }).collect(Collectors.toList());
+      recommendationList.add(tmpResultData);
 
-    return recommendation;
+    });
+
+    return recommendationList;
   }
 
 }

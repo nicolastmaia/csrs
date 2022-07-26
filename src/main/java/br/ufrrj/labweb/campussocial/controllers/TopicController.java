@@ -1,7 +1,9 @@
 package br.ufrrj.labweb.campussocial.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,34 +23,17 @@ public class TopicController {
     @Autowired
     private TopicService topicService;
 
-    @PostMapping("/circle")
-    List<TopicResultData> getWithinCircle(@RequestBody TopicRequestData requestData) {
-
-        List<SearchHit<Topic>> searchHits = topicService.getWithinCircle(requestData.getCenterLat(),
-                requestData.getCenterLon(),
-                requestData.getDistance(), requestData.getUnit());
-
-        return topicService.toResultData(searchHits);
-    }
-
     @PostMapping("/square")
-    List<TopicResultData> getWithinSquare(@RequestBody TopicRequestData requestData) {
+    List<TopicResultData> getWithinSquare(@RequestBody TopicRequestData requestData) throws IOException {
 
-        List<SearchHit<Topic>> searchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
+        SearchHits searchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
                 requestData.getTopLeftLon(),
                 requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
-                requestData.getCenterLon(), requestData.getUnit(), requestData.gettimestampLowerBound(),
-                requestData.getTimestampUpperBound(), requestData.getPageStart(), requestData.getPageOffset());
+                requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
+                requestData.getTimestampUpperBound(), requestData.getPageOffset(),
+                requestData.getSearchAfter());
 
         return topicService.toResultData(searchHits);
+
     }
-
-    @PostMapping("/bytitle")
-    List<TopicResultData> getByTitle(@RequestBody TopicRequestData requestData) {
-
-        List<SearchHit<Topic>> searchHits = topicService.getByTitle(requestData.getTitle());
-
-        return topicService.toResultData(searchHits);
-    }
-
 }

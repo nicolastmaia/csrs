@@ -42,6 +42,8 @@ public class RecommendationRequestData {
   @Nullable
   private int pageOffset = 10;
 
+  private double searchAfter = 0.0;
+
   public List<Long> getInterestIdList() {
     return interestIdList;
   }
@@ -151,6 +153,14 @@ public class RecommendationRequestData {
 
   public void setPageOffset(int pageOffset) {
     this.pageOffset = pageOffset;
+  }
+
+  public double getSearchAfter() {
+    return searchAfter;
+  }
+
+  public void setSearchAfter(double searchAfter) {
+    this.searchAfter = searchAfter;
   }
 
 }

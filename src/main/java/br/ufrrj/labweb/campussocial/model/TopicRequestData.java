@@ -40,6 +40,8 @@ public class TopicRequestData {
     @Nullable
     int pageOffset;
 
+    double searchAfter;
+
     public String getTitle() {
         return title;
     }
@@ -123,11 +125,11 @@ public class TopicRequestData {
         this.bottomRightLon = bottomRightLon;
     }
 
-    public long gettimestampLowerBound() {
+    public long getTimestampLowerBound() {
         return timestampLowerBound;
     }
 
-    public void settimestampLowerBound(@Nullable long timestampLowerBound) {
+    public void setTimestampLowerBound(long timestampLowerBound) {
         this.timestampLowerBound = timestampLowerBound;
     }
 
@@ -153,5 +155,13 @@ public class TopicRequestData {
 
     public void setPageOffset(int pageOffset) {
         this.pageOffset = pageOffset;
+    }
+
+    public double getSearchAfter() {
+        return searchAfter;
+    }
+
+    public void setSearchAfter(double searchAfter) {
+        this.searchAfter = searchAfter;
     }
 }
