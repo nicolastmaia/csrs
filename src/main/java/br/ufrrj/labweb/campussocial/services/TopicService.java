@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.ufrrj.labweb.campussocial.model.TopicResultData;
-import br.ufrrj.labweb.campussocial.repositories.TopicRepository;
+import br.ufrrj.labweb.campussocial.repositories.ITopicRepository;
 
 @Service
 public class TopicService {
 
     @Autowired
-    private TopicRepository repository;
+    private ITopicRepository repository;
 
     public SearchHits getWithinSquare(double topLeftLat, double topLeftLon, double bottomRightLat,
             double bottomRightLon, double centerLat, double centerLon, String unit, long timestampLowerBound,

@@ -5,13 +5,11 @@ import java.util.List;
 
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.ufrrj.labweb.campussocial.model.Topic;
 import br.ufrrj.labweb.campussocial.model.TopicRequestData;
 import br.ufrrj.labweb.campussocial.model.TopicResultData;
 import br.ufrrj.labweb.campussocial.services.TopicService;
