@@ -1,5 +1,7 @@
 package br.ufrrj.labweb.campussocial.repositories;
 
+import java.io.IOException;
+
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -16,8 +18,6 @@ import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.io.IOException;
 
 @Repository
 public class TopicRepository implements ITopicRepository {
@@ -53,6 +53,7 @@ public class TopicRepository implements ITopicRepository {
     searchRequest.source(searchSourceBuilder);
 
     SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
+
     return response.getHits();
   }
 }

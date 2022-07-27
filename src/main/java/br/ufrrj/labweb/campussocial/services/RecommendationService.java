@@ -1,6 +1,5 @@
 package br.ufrrj.labweb.campussocial.services;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,6 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.ElasticsearchStatusException;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ public class RecommendationService {
   private static final double EXTRA_TOTAL_PERCENT = 1.2;
 
   public List<RecommendationResultData> recommendedTopicsWithinSquare(
-      RecommendationRequestData requestData) throws IOException {
+      RecommendationRequestData requestData) throws ElasticsearchStatusException {
 
     // initialize lists to use
     List<Map<String, Object>> interestRows = new ArrayList<Map<String, Object>>();
@@ -40,6 +42,7 @@ public class RecommendationService {
     List<SearchHit> nmuiTopics = new ArrayList<SearchHit>();
     List<SearchHit> tempList = new ArrayList<SearchHit>();
     List<SearchHit> recommendedTopics = new ArrayList<SearchHit>();
+    SearchHits topicSearchHits;
 
     // initialize flags needed for do-while loop
     Boolean isOffsetBiggerThanTotalRegistries = false;
@@ -53,21 +56,28 @@ public class RecommendationService {
     // get user's interest list received in request
     List<Long> interestIdList = requestData.getInterestIdList();
 
+    // get the searchAfter value to use in the next query to elasticsearch
     double searchAfter = requestData.getSearchAfter();
 
     // while criteria is met, continue to search for topics
     do {
       // get topics within square
-      SearchHits topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
-          requestData.getTopLeftLon(),
-          requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
-          requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
-          requestData.getTimestampUpperBound(), totalAmount, searchAfter);
+      try {
+        topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
+            requestData.getTopLeftLon(),
+            requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
+            requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
+            requestData.getTimestampUpperBound(), totalAmount, searchAfter);
+      } catch (Exception e) {
+        ElasticsearchStatusException ese = new ElasticsearchStatusException(
+            "Unable to communicate with Elastic Search Host",
+            RestStatus.SERVICE_UNAVAILABLE, e, new Object());
+        throw ese;
+      }
 
       SearchHit[] topics = topicSearchHits.getHits();
 
       if (topics.length > 0) {
-
         // map found topics to list of only post ids
         List<Long> postIdList = new ArrayList<Long>();
         for (SearchHit searchHit : topics) {
@@ -80,24 +90,24 @@ public class RecommendationService {
             interestService.getByPostIdListAndInterestIdList(postIdList, interestIdList).stream())
             .collect(Collectors.toList());
 
-        // group found topics by whether they have user's interests associated (MUI) or
-        // not (NMUI)
+        // group found topics by whether they (M)atch (U)ser's (I)nterests (MUI) or
+        // (N)ot (M)atch (U)ser's (I)nterests (NMUI)
         groupedTopics = groupMUIandNMUI(topics,
             interestRows);
-
         tempList = groupedTopics.get(true);
         muiTopics = Stream.concat(muiTopics.stream(), tempList.stream()).collect(Collectors.toList());
-
         tempList = groupedTopics.get(false);
         nmuiTopics = Stream.concat(nmuiTopics.stream(), tempList.stream()).collect(Collectors.toList());
 
+        // get the searchAfter of the last item in returned topics in order to use it in
+        // the next query to elasticsearch
         searchAfter = Double
             .parseDouble(topics[topics.length - 1].getSortValues()[0].toString());
       }
 
       // check if pagination upper limit is bigger than total registries inside these
       // coordinates
-      isOffsetBiggerThanTotalRegistries = requestData.getPageOffset() > topics.length - 1 ? true
+      isOffsetBiggerThanTotalRegistries = requestData.getPageOffset() > topics.length ? true
           : false;
 
       // check if there are enough MUI and NMUI topics to recommend
@@ -119,12 +129,12 @@ public class RecommendationService {
     recommendedTopics = Stream.concat(recommendedTopics.stream(), muiTopics.stream()).collect(Collectors.toList());
     recommendedTopics = Stream.concat(recommendedTopics.stream(), nmuiTopics.stream()).collect(Collectors.toList());
 
-    // return recommended topics with the interests that matched the user interests.
+    // return recommended topics paired with the interests that matched the user's
+    // interests.
     return toResultData(recommendedTopics, interestRows);
-
   }
 
-  public Map<Boolean, List<SearchHit>> groupMUIandNMUI(SearchHit[] topics,
+  private Map<Boolean, List<SearchHit>> groupMUIandNMUI(SearchHit[] topics,
       List<Map<String, Object>> interestRows) {
 
     final Map<Boolean, List<SearchHit>> groupedTopics = new HashMap<Boolean, List<SearchHit>>();
@@ -154,7 +164,7 @@ public class RecommendationService {
     return groupedTopics;
   }
 
-  public List<RecommendationResultData> toResultData(List<SearchHit> recommendedTopics,
+  private List<RecommendationResultData> toResultData(List<SearchHit> recommendedTopics,
       List<Map<String, Object>> interestRows) {
     List<RecommendationResultData> recommendationList = new ArrayList<RecommendationResultData>();
 

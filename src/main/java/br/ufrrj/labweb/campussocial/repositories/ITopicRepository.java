@@ -1,9 +1,9 @@
 package br.ufrrj.labweb.campussocial.repositories;
 
+import java.io.IOException;
+
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.search.SearchHits;
-
-import java.io.IOException;
 
 public interface ITopicRepository {
 
