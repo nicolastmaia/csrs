@@ -1,14 +1,15 @@
 package br.ufrrj.labweb.campussocial.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
-import org.springframework.data.elasticsearch.core.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.ufrrj.labweb.campussocial.model.Topic;
 import br.ufrrj.labweb.campussocial.model.TopicRequestData;
 import br.ufrrj.labweb.campussocial.model.TopicResultData;
 import br.ufrrj.labweb.campussocial.services.TopicService;
@@ -17,40 +18,20 @@ import br.ufrrj.labweb.campussocial.services.TopicService;
 @RequestMapping("/topics")
 public class TopicController {
 
-    private final TopicService topicService;
-
-    public TopicController(TopicService topicService) {
-        this.topicService = topicService;
-    }
-
-    @PostMapping("/circle")
-    List<TopicResultData> getWithinCircle(@RequestBody TopicRequestData requestData) {
-
-        List<SearchHit<Topic>> searchHits = topicService.getWithinCircle(requestData.getCenterLat(),
-                requestData.getCenterLon(),
-                requestData.getDistance(), requestData.getUnit());
-
-        return topicService.toResultData(searchHits);
-    }
+    @Autowired
+    private TopicService topicService;
 
     @PostMapping("/square")
-    List<TopicResultData> getWithinSquare(@RequestBody TopicRequestData requestData) {
+    List<TopicResultData> getWithinSquare(@RequestBody TopicRequestData requestData) throws IOException {
 
-        List<SearchHit<Topic>> searchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
+        SearchHits searchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
                 requestData.getTopLeftLon(),
                 requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
-                requestData.getCenterLon(), requestData.getUnit(), requestData.gettimestampLowerBound(),
-                requestData.getTimestampUpperBound(), requestData.getPageStart(), requestData.getPageOffset());
+                requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampMin(),
+                requestData.getTimestampMax(), requestData.getPageOffset(),
+                requestData.getSearchAfter());
 
         return topicService.toResultData(searchHits);
+
     }
-
-    @PostMapping("/bytitle")
-    List<TopicResultData> getByTitle(@RequestBody TopicRequestData requestData) {
-
-        List<SearchHit<Topic>> searchHits = topicService.getByTitle(requestData.getTitle());
-
-        return topicService.toResultData(searchHits);
-    }
-
 }

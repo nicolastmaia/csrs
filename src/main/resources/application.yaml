@@ -5,6 +5,12 @@ logging.level:
     data: info
     data.elasticsearch: info
 
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/campsocialdb
+    username: postgres
+    password: postgres
+  
 br:
   ufrrj:
     labweb:

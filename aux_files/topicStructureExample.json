@@ -1,0 +1,39 @@
+    {
+        "topic": {
+            "image": null,
+            "id_post": 11274,
+            "latitude": 10.35412,
+            "created_at": "2022-06-09T07:51:39.075Z",
+            "video": null,
+            "title": "autem ullam voluptas",
+            "type": "topicpost",
+            "media_url": null,
+            "topic_type_id": 4,
+            "about_place_id": null,
+            "@timestamp": "2022-06-11T22:55:44.351Z",
+            "user_id": 51,
+            "location": {
+                "lon": 10.34102,
+                "lat": 10.35412
+            },
+            "text": "Similique nulla ex.",
+            "modified_at": "2022-06-09T07:51:39.075Z",
+            "about_unity_id": null,
+            "longitude": 10.34102
+        },
+        "interestList": [
+            {
+                "post_id": 11274,
+                "interest_id": 57,
+                "interest_name": "exposition",
+                "modified_at": "2022-06-09T10:51:39.075+00:00"
+            },
+            {
+                "post_id": 11274,
+                "interest_id": 58,
+                "interest_name": "fashion",
+                "modified_at": "2022-06-09T10:51:39.075+00:00"
+            }
+        ],
+        "searchAfter": 1.0838580207282844
+    }

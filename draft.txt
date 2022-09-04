@@ -1,0 +1,19 @@
+1 - define requested amount of total topics;
+
+2 - define percent of topics from total amount that match user intrests (mui) and topics that don't match user intrests (nmui);
+
+3 - get user's intrests from request;
+
+4 - get a defined amount (more than total requested) of topics within a square;
+
+5 - get interestsXtopic association of topics that are within square and match user intrests;; 
+
+6 - separate topics from square into mui and nmui groups;
+
+7 - check if mui+nmui topics are enough to fill the page requested
+
+8 - if either mui or nmui is not enough, repeat from step 3 to 8 until both are enough;
+
+9 - merge interests and respective topics;
+
+10 - return recommended topics to client;

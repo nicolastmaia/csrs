@@ -29,16 +29,18 @@ public class TopicRequestData {
     String unit;
 
     @Nullable
-    long timestampLowerBound;
+    long timestampMin;
 
     @Nullable
-    long timestampUpperBound;
+    long timestampMax;
 
     @Nullable
     int pageStart;
 
     @Nullable
     int pageOffset;
+
+    double searchAfter;
 
     public String getTitle() {
         return title;
@@ -123,20 +125,20 @@ public class TopicRequestData {
         this.bottomRightLon = bottomRightLon;
     }
 
-    public long gettimestampLowerBound() {
-        return timestampLowerBound;
+    public long getTimestampMin() {
+        return timestampMin;
     }
 
-    public void settimestampLowerBound(@Nullable long timestampLowerBound) {
-        this.timestampLowerBound = timestampLowerBound;
+    public void setTimestampMin(long timestampMin) {
+        this.timestampMin = timestampMin;
     }
 
-    public long getTimestampUpperBound() {
-        return timestampUpperBound;
+    public long getTimestampMax() {
+        return timestampMax;
     }
 
-    public void setTimestampUpperBound(@Nullable long timestampUpperBound) {
-        this.timestampUpperBound = timestampUpperBound;
+    public void setTimestampMax(@Nullable long timestampMax) {
+        this.timestampMax = timestampMax;
     }
 
     public int getPageStart() {
@@ -153,5 +155,13 @@ public class TopicRequestData {
 
     public void setPageOffset(int pageOffset) {
         this.pageOffset = pageOffset;
+    }
+
+    public double getSearchAfter() {
+        return searchAfter;
+    }
+
+    public void setSearchAfter(double searchAfter) {
+        this.searchAfter = searchAfter;
     }
 }
