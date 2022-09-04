@@ -31,13 +31,10 @@ public class RecommendationRequestData {
   private String unit;
 
   @Nullable
-  private long timestampLowerBound;
+  private long timestampMin;
 
   @Nullable
-  private long timestampUpperBound;
-
-  @Nullable
-  private int pageStart = 0;
+  private long timestampMax;
 
   @Nullable
   private int pageOffset = 10;
@@ -123,28 +120,20 @@ public class RecommendationRequestData {
     this.unit = unit;
   }
 
-  public long getTimestampLowerBound() {
-    return timestampLowerBound;
+  public long getTimestampMin() {
+    return timestampMin;
   }
 
-  public void setTimestampLowerBound(long timestampLowerBound) {
-    this.timestampLowerBound = timestampLowerBound;
+  public void setTimestampMin(long timestampMin) {
+    this.timestampMin = timestampMin;
   }
 
-  public long getTimestampUpperBound() {
-    return timestampUpperBound;
+  public long getTimestampMax() {
+    return timestampMax;
   }
 
-  public void setTimestampUpperBound(long timestampUpperBound) {
-    this.timestampUpperBound = timestampUpperBound;
-  }
-
-  public int getPageStart() {
-    return pageStart;
-  }
-
-  public void setPageStart(int pageStart) {
-    this.pageStart = pageStart;
+  public void setTimestampMax(long timestampMax) {
+    this.timestampMax = timestampMax;
   }
 
   public int getPageOffset() {

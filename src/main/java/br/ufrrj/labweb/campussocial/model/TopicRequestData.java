@@ -29,10 +29,10 @@ public class TopicRequestData {
     String unit;
 
     @Nullable
-    long timestampLowerBound;
+    long timestampMin;
 
     @Nullable
-    long timestampUpperBound;
+    long timestampMax;
 
     @Nullable
     int pageStart;
@@ -125,20 +125,20 @@ public class TopicRequestData {
         this.bottomRightLon = bottomRightLon;
     }
 
-    public long getTimestampLowerBound() {
-        return timestampLowerBound;
+    public long getTimestampMin() {
+        return timestampMin;
     }
 
-    public void setTimestampLowerBound(long timestampLowerBound) {
-        this.timestampLowerBound = timestampLowerBound;
+    public void setTimestampMin(long timestampMin) {
+        this.timestampMin = timestampMin;
     }
 
-    public long getTimestampUpperBound() {
-        return timestampUpperBound;
+    public long getTimestampMax() {
+        return timestampMax;
     }
 
-    public void setTimestampUpperBound(@Nullable long timestampUpperBound) {
-        this.timestampUpperBound = timestampUpperBound;
+    public void setTimestampMax(@Nullable long timestampMax) {
+        this.timestampMax = timestampMax;
     }
 
     public int getPageStart() {

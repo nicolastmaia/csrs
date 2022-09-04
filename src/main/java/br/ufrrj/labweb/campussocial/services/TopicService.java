@@ -21,8 +21,8 @@ public class TopicService {
     private ITopicRepository repository;
 
     public SearchHits getWithinSquare(double topLeftLat, double topLeftLon, double bottomRightLat,
-            double bottomRightLon, double centerLat, double centerLon, String unit, long timestampLowerBound,
-            long timestampUpperBound,
+            double bottomRightLon, double centerLat, double centerLon, String unit, long timestampMin,
+            long timestampMax,
             int offset, double searchAfter) throws IOException {
 
         GeoPoint centerPoint = new GeoPoint(centerLat, centerLon);
@@ -30,28 +30,31 @@ public class TopicService {
         GeoPoint topLeftPoint = new GeoPoint(topLeftLat, topLeftLon);
         GeoPoint bottomRightPoint = new GeoPoint(bottomRightLat, bottomRightLon);
 
-        SearchHits searchHits = repository.searchWithinSquare(topLeftPoint, bottomRightPoint,
-                centerPoint, unit, timestampLowerBound, timestampUpperBound, offset, searchAfter);
+        SearchHits searchHits = repository.getWithinSquare(topLeftPoint, bottomRightPoint,
+                centerPoint, unit, timestampMin, timestampMax, offset, searchAfter);
 
         return searchHits;
     }
 
     public List<TopicResultData> toResultData(SearchHits searchHits) {
+
         List<TopicResultData> resultData = new ArrayList<>();
 
         SearchHit[] hits = searchHits.getHits();
 
         for (SearchHit hit : hits) {
             Map<String, Object> hitAsMap = hit.getSourceAsMap();
+
             Long id = Long.parseLong(hitAsMap.get("id_post").toString());
             String title = hitAsMap.get("title").toString();
             String text = hitAsMap.get("text").toString();
+
             Map<String, Double> location = (Map<String, Double>) hitAsMap.get("location");
             Double lat = (Double) location.get("lat");
             Double lon = (Double) location.get("lon");
-            Double searchAfter = (Double) hit.getSortValues()[0];
-
             GeoPoint locationGeoPoint = new GeoPoint(lat, lon);
+
+            Double searchAfter = (Double) hit.getSortValues()[0];
 
             resultData.add(new TopicResultData(id, title, text, locationGeoPoint, searchAfter));
         }

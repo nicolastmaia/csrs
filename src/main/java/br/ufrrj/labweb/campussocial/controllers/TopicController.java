@@ -27,8 +27,8 @@ public class TopicController {
         SearchHits searchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
                 requestData.getTopLeftLon(),
                 requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
-                requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
-                requestData.getTimestampUpperBound(), requestData.getPageOffset(),
+                requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampMin(),
+                requestData.getTimestampMax(), requestData.getPageOffset(),
                 requestData.getSearchAfter());
 
         return topicService.toResultData(searchHits);

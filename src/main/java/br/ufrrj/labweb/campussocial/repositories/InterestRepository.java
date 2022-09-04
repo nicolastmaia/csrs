@@ -8,22 +8,20 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class InterestRepository {
+public class InterestRepository implements IInterestRepository {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  public List<Map<String, Object>> getByPostIdListAndInterestIdList(String postIdList, String interestIdList) {
+  public List<Map<String, Object>> getByPostIdListAndInterestIdList(List<Long> topicIdList, List<Long> interestIdList) {
 
-    // get list of interests of found topics and concat with the list of the
-    // previous iteration
+    String interestIdListAsString = interestIdList.toString().replace("[", "(").replace("]",
+        ")");
+    String topicIdListAsString = topicIdList.toString().replace("[", "(").replace("]", ")");
+
     String interestSql = "SELECT * FROM interestpost WHERE interest_id IN "
-        + String.join(",",
-            interestIdList)
-        + " AND post_id IN "
-        + String.join(",", postIdList);
+        + interestIdListAsString + " AND post_id IN " + topicIdListAsString;
 
     return jdbcTemplate.queryForList(interestSql);
-  }
-
+  };
 }

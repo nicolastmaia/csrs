@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
@@ -32,7 +31,7 @@ public class RecommendationService {
   private static final double NMUI_PERCENT = 0.2;
   private static final double EXTRA_TOTAL_PERCENT = 1.2;
 
-  public List<RecommendationResultData> recommendedTopicsWithinSquare(
+  public List<RecommendationResultData> recommendTopicsWithinSquare(
       RecommendationRequestData requestData) throws ElasticsearchStatusException {
 
     // initialize lists to use
@@ -66,8 +65,8 @@ public class RecommendationService {
         topicSearchHits = topicService.getWithinSquare(requestData.getTopLeftLat(),
             requestData.getTopLeftLon(),
             requestData.getBottomRightLat(), requestData.getBottomRightLon(), requestData.getCenterLat(),
-            requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampLowerBound(),
-            requestData.getTimestampUpperBound(), totalAmount, searchAfter);
+            requestData.getCenterLon(), requestData.getUnit(), requestData.getTimestampMin(),
+            requestData.getTimestampMax(), totalAmount, searchAfter);
       } catch (Exception e) {
         ElasticsearchStatusException ese = new ElasticsearchStatusException(
             "Unable to communicate with Elastic Search Host",

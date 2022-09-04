@@ -26,20 +26,22 @@ public class TopicRepository implements ITopicRepository {
   private RestHighLevelClient client;
 
   @Override
-  public SearchHits searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
-      String unit, long timestampLowerBound, long timestampUpperBound, int offset,
+  public SearchHits getWithinSquare(GeoPoint topLeftPoint, GeoPoint bottomRightPoint, GeoPoint centerPoint,
+      String unit, long timestampMin, long timestampMax, int offset,
       double searchAfter) throws IOException {
 
     SearchRequest searchRequest = new SearchRequest("topic-post");
 
     QueryBuilder query = QueryBuilders.boolQuery()
-        .must(QueryBuilders.geoBoundingBoxQuery("location").setCorners(geoPoint1, geoPoint2));
+        .must(QueryBuilders.geoBoundingBoxQuery("location").setCorners(topLeftPoint, bottomRightPoint));
 
-    if (timestampLowerBound > 0 && timestampUpperBound > 0) {
+    // TODO: implementar filtro de maneira que a data minima ou maxima
+    // possam ser nulos e isso represente um intervalo de tempo aberto para cima ou
+    // para baixo.
+    if (timestampMin > 0 && timestampMax > 0) {
       ((BoolQueryBuilder) query)
-          .must(QueryBuilders.rangeQuery("timestamp").gte(timestampLowerBound)
-              .lte(timestampUpperBound));
-
+          .must(QueryBuilders.rangeQuery("timestamp").gte(timestampMin)
+              .lte(timestampMax));
     }
 
     SortBuilder sort = SortBuilders.geoDistanceSort("location", centerPoint).unit(DistanceUnit.KILOMETERS)
@@ -47,8 +49,8 @@ public class TopicRepository implements ITopicRepository {
 
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().query(query)
         .sort(sort)
-        .searchAfter(new Double[] { searchAfter })
-        .size(offset);
+        .size(offset)
+        .searchAfter(new Double[] { searchAfter });
 
     searchRequest.source(searchSourceBuilder);
 

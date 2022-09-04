@@ -2,13 +2,7 @@ package br.ufrrj.labweb.campussocial.controllers;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.elasticsearch.ElasticsearchStatusException;
-import org.elasticsearch.rest.RestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +19,7 @@ public class RecommendationController {
   private RecommendationService recommendationService;
 
   @RequestMapping("/topics/square")
-  List<RecommendationResultData> recommendedTopicsWithinSquare(@RequestBody RecommendationRequestData requestData) {
-    return recommendationService.recommendedTopicsWithinSquare(requestData);
+  List<RecommendationResultData> recommendTopicsWithinSquare(@RequestBody RecommendationRequestData requestData) {
+    return recommendationService.recommendTopicsWithinSquare(requestData);
   }
-
 }

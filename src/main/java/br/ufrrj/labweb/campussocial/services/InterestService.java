@@ -11,7 +11,6 @@ import br.ufrrj.labweb.campussocial.repositories.InterestRepository;
 
 @Service
 public class InterestService {
-
   @Autowired
   private InterestRepository interestRepository;
 
@@ -22,11 +21,7 @@ public class InterestService {
       return new ArrayList<Map<String, Object>>();
     }
 
-    String interestIdListAsString = interestIdList.toString().replace("[", "(").replace("]",
-        ")");
-    String postIdListAsString = postIdList.toString().replace("[", "(").replace("]", ")");
-
-    return interestRepository.getByPostIdListAndInterestIdList(postIdListAsString, interestIdListAsString);
+    return interestRepository.getByPostIdListAndInterestIdList(postIdList,
+        interestIdList);
   }
-
 }

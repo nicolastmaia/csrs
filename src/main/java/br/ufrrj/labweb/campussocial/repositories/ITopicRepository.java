@@ -7,7 +7,7 @@ import org.elasticsearch.search.SearchHits;
 
 public interface ITopicRepository {
 
-    SearchHits searchWithinSquare(GeoPoint geoPoint1, GeoPoint geoPoint2, GeoPoint centerPoint,
-            String unit, long timestampLowerBound, long timestampUpperBound, int offset,
+    SearchHits getWithinSquare(GeoPoint topLeftPoint, GeoPoint bottomRightPoint, GeoPoint centerPoint,
+            String unit, long timestampMin, long timestampMax, int offset,
             double searchAfter) throws IOException;
 }
