@@ -4,3 +4,7 @@ This was my final graduation project for my university course in Information Sys
 In this project, georreferenced items are taken from a PostgreSQL DB and indexed to Elasticsearch to be later recovered by the CSRS application.  
   
 The actual CSRS application is written in SpringBoot and combines georreferenced items with users' interest tags to create a list with items recommended for a specific user.
+
+Here are the links for the backend and frontend projects of CidadeSocial, from which CSRS is derived:  
+[backend](https://github.com/ufrrj-labweb/cidadesocialServer)  
+[frontend](https://github.com/ufrrj-labweb/cidadeSocialMobile)
