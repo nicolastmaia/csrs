@@ -13,4 +13,6 @@ Below you'll find two diagrams that explain the working of CSRS:
 &nbsp;  
   
 2. This second diagram shows how CSRS is structered internally and how it interacts with its data sources.
-    <img src="https://github.com/nicolastmaia/csrs/assets/45211638/bdd54ef2-536d-460c-997a-aebc3ad0577f" alt="csrs-internal" width="600"/>
+    <img src="https://github.com/nicolastmaia/csrs/assets/45211638/bdd54ef2-536d-460c-997a-aebc3ad0577f" alt="csrs-internal" width="600"/>  
+  
+In this [link](https://github.com/nicolastmaia/csrs-map-demo) you can also find a frontend demo application that uses CSRS without the need of an intermediary CidadeSocial server running.
